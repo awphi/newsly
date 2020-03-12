@@ -3,8 +3,22 @@
 	--cl-fade: rgba(234, 236, 238, 0.5);
 	--cl-less-fade: rgba(234, 236, 238, 0.4);
 	--cl-head: #EBF5FB;
+	--cl-muted: rgba(33, 37, 41, 0.8);
 }
 
+html {
+	min-width: 360px;
+}
+
+h3 {
+	color: var(--cl-muted);
+	font-size: medium;
+	font-weight: 400;
+}
+
+.flex-fill {
+	flex: 1;
+}
 
 .bg-fade {
 	background-color: var(--cl-fade);

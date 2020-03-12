@@ -1,6 +1,21 @@
 extends template.pug
 
-append content
+append templates
+	template#post-card-template
+		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm
+			.post-card.d-flex.flex-column(story='')
+				.d-flex.flex-column.w-100
+					h2.m-0.title
+					h3.m-0.subtitle
+					.mb-1.mt-2.d-flex
+						p.m-0.mr-2.author
+						p.m-0.ml-2.text-right.flex-fill.date
+				hr.mt-0.w-100
+				.d-flex.flex-row
+					img.post-card-img.shadow-sm.rounded.header-image
+					p.mb-0.text-body
+			button.read-more-btn.btn.btn-secondary(style='opacity: 0;') Read more...
+
 
 append scripts
 	script(src='/js/index.js')
