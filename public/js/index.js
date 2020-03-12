@@ -33,9 +33,10 @@ function loadStoryToDOM (id, json) {
     if (json === undefined) {
         return;
     }
-    console.log(`Story received: ${id}, loading: `);
-    console.table(json);
 
+    console.log(`Story received: ${id}, loading: `, json);
+
+    // Load data from JSON
     const template = document.getElementById('post-card-template');
     const card = document.importNode(template.content, true);
     card.querySelector('.author').textContent = 'by ' + json.author;
@@ -49,6 +50,7 @@ function loadStoryToDOM (id, json) {
     const $card = $(card.querySelector('.post-card-wrapper'));
     const $readMore = $(card.querySelector('button'));
 
+    // Animations
     $card.hover(() => {
         // On hover
         $card.children().animate({
@@ -66,6 +68,7 @@ function loadStoryToDOM (id, json) {
         });
     },
     () => {
+        // On unhover
         $card.children().animate({
             opacity: 1
         }, {

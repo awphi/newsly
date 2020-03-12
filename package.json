@@ -2,10 +2,10 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Server module for programming summative.",
-  "main": "main.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon main.js",
+    "dev": "nodemon server.js",
     "lint": "npx eslint ./**/*.js --fix"
   },
   "author": "awphi",

@@ -1,8 +1,28 @@
 extends template.pug
 
+block content
+	.row
+		.col-md-3.bg-less-fade
+		.col-lg-6.p-3
+			.d-flex.flex-row.align-items-center
+				h1.mr-auto.mb-0 All Stories
+				.dropdown
+					button.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown') Sorted by: Date
+						i.far.fa-clock.ml-2
+					.dropdown-menu.dropdown-menu-right
+						a.dropdown-item(href='#', sort-by='date') Date
+							i.far.fa-clock.ml-2
+						a.dropdown-item(href='#', sort-by='comments') Comments
+							i.far.fa-comments.ml-2
+						a.dropdown-item(href='#', sort-by='popularity') Popularity
+							i.far.fa-thumbs-up.ml-2
+			hr
+			#stories
+		.col-md-3.bg-less-fade
+
 append templates
 	template#post-card-template
-		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm
+		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm.flex-column.mb-3
 			.post-card.d-flex.flex-column(story='')
 				.d-flex.flex-column.w-100
 					h2.m-0.title
