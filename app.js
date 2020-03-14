@@ -2,10 +2,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
-const fs = require('fs');
+const stories = require('./stories');
 
-// TODO write a timer that re-reads the stories every 5 minutes into some array
-// only return the last x stories (chronologically)
+// Todo control with environment var?
+const UPDATE_TIME = 300;
+
+// Every 300 seconds (5 minutes) - update the stories into the cache
+setInterval(stories.update, UPDATE_TIME * 1000);
+stories.update();
 
 // Favicon
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -38,65 +42,43 @@ app.get('/submit', (req, res) => {
 });
 
 app.get('/stories', (req, res) => {
-    fs.readdir(path.join(__dirname, 'data'), function (err, files) {
-        // handling error
-        if (err) {
-            res.status(500);
-            return res.send('Error!');
-        }
+    res.status(200);
+    return res.json(Object.keys(stories.cache) || []);
+});
 
+app.get('/stories/:storyId', function (req, res) {
+    const story = req.params.storyId;
+    if (story in stories.cache) {
         res.status(200);
-        return res.json(files);
-    });
+        return res.json(stories.cache[story]);
+    }
+
+    res.status(500);
+    return res.send('Error!');
 });
 
-app.get('/stories/*', function (req, res) {
-    const wildcard = req.url.split('/stories/')[1];
-    handleJsonRequest(path.join(__dirname, 'data', wildcard, 'post.json'), req, res);
+app.get('/stories/:storyId/images/:imageId', function (req, res) {
+    const img = stories.getImage(req.params.storyId, req.params.imageId);
+    if (!img) {
+        res.status(500);
+        // TODO replace
+        return res.send('Error!');
+    }
+
+    res.set({ 'Content-Type': 'image/png' });
+    res.status(200);
+    return res.sendFile(img);
 });
 
-app.get('/images/*', function (req, res) {
-    const wildcard = req.url.split('/images/')[1];
-    const split = wildcard.split('/');
-    const file = path.join(__dirname, 'data', split[0], split[1] + '.png');
-
-    fs.access(file, fs.constants.F_OK, (err) => {
-        if (err) {
-            res.status(500);
-
-            // TODO replace
-            return res.send('Error!');
-        }
-
-        res.set({ 'Content-Type': 'image/png' });
+app.get('/stories/:storyId/comments', function (req, res) {
+    const story = req.params.storyId;
+    if (story in stories.comments) {
         res.status(200);
-        res.sendFile(file);
-    });
+        return res.json(stories.comments[story]);
+    }
+
+    res.status(500);
+    return res.send('Error!');
 });
-
-app.get('/comments/*', function (req, res) {
-    const wildcard = req.url.split('/comments/')[1];
-    console.log(wildcard);
-    handleJsonRequest(path.join(__dirname, 'data', wildcard, 'comments.json'), req, res);
-});
-
-function handleJsonRequest (loc, req, res) {
-    fs.readFile(loc, 'utf8', function (err, contents) {
-        // Handling error
-        if (err) {
-            res.status(500);
-
-            // TODO replace
-            return res.send('Error!');
-        }
-
-        res.status(200);
-
-        // Removes line endings
-        contents = JSON.stringify(JSON.parse(contents));
-
-        res.json(contents);
-    });
-}
 
 module.exports = app;

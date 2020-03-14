@@ -18,7 +18,7 @@ function requestStory (story) {
     // For the life of me can't figure out why this doesn't work when it's not parsed twice...
     fetch('http://127.0.0.1:3000/stories/' + story)
         .then(response => response.text())
-        .then(text => JSON.parse(JSON.parse(text)))
+        .then(text => JSON.parse(text))
         .then(json => {
             stories[story] = json;
             return json;
@@ -43,7 +43,7 @@ function loadStoryToDOM (id, json) {
     card.querySelector('.date').textContent = new Date(json.date).toUTCString();
     card.querySelector('.title').textContent = json.title;
     card.querySelector('.subtitle').textContent = json.subtitle;
-    card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/images/' + id + '/' + json.images[0]);
+    card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json.images[0]);
     card.querySelector('.text-body').textContent = json.body + '...';
     card.querySelector('.post-card').setAttribute('story', id);
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon server.js",
-    "lint": "npx eslint ./**/*.js --fix"
+    "pretest": "npx eslint ./**/*.js --fix"
   },
   "author": "awphi",
   "license": "ISC",
