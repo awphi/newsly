@@ -32,10 +32,9 @@ stories.updateImage = function(id, img) {
 
   fs.access(file, fs.constants.F_OK, err => {
     if (err) {
-      console.log(
+      return console.error(
         `Error encountered when reading image of story ${id}, ${img}: ${err}`
       );
-      return;
     }
 
     if (!(id in stories.images)) {
@@ -59,11 +58,11 @@ stories.updateComments = function(id) {
       stories.comments[id] = json;
       return json;
     })
-    .catch(err =>
-      console.log(
+    .catch(err => {
+      console.error(
         `Error encountered when reading comments of story ${id}: ${err}`
-      )
-    );
+      );
+    });
 };
 
 stories.update = function() {
@@ -81,11 +80,11 @@ stories.update = function() {
           return json;
         })
         .then(() => stories.updateImages(i))
-        .catch(err =>
-          console.log(`Error encountered when reading story: ${err}`)
-        );
+        .catch(err => {
+          console.error(`Error encountered when reading story: ${err}`);
+        });
 
-      // Update the comments if we have no record of them - otherwise posting a new comment forces an update
+      // Update the comments if we have no record of them - then posting a new comment forces an update
       if (!(i in stories.comments)) {
         stories.updateComments(i);
       }

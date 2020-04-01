@@ -25,6 +25,7 @@ app.all('*', function(req, res, next) {
 
 app.get('/stories', (req, res) => {
   const keys = Object.keys(stories.cache);
+  console.log(keys);
 
   if (keys.length === 0) {
     return res.sendStatus(404);
@@ -50,9 +51,7 @@ app.get('/stories/:storyId/images/:imageId', function(req, res) {
   }
 
   return res
-    .set({
-      'Content-Type': 'image/png'
-    })
+    .set({ 'Content-Type': 'image/png' })
     .status(200)
     .sendFile(img);
 });
