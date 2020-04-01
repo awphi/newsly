@@ -1,8 +1,8 @@
 module.exports = {
-  extends: 'standard',
+  extends: ['standard', 'prettier'],
+  plugins: ['prettier'],
   rules: {
     semi: [2, 'always'],
-    indent: 'off',
-    'space-before-function-paren': ['error', 'never'],
-  },
+    indent: 'off'
+  }
 };

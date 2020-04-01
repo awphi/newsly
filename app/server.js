@@ -1,7 +1,15 @@
 const http = require('http');
 const app = require('./app');
+const stories = require('./stories');
 const hostname = '0.0.0.0';
 const port = 3000;
+// TODO control with environment var
+const updateTime = 300;
+
+// Set the timer to update stories on server load
+// Every 300 seconds (5 minutes) - update the stories into the cache
+setInterval(stories.update, updateTime * 1000);
+stories.update();
 
 app.set('port', port);
 

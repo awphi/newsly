@@ -2,13 +2,6 @@ const express = require('express');
 const app = express();
 const stories = require('./stories');
 
-// TODO control with environment var
-const UPDATE_TIME = 300;
-
-// Every 300 seconds (5 minutes) - update the stories into the cache
-setInterval(stories.update, UPDATE_TIME * 1000);
-stories.update();
-
 // Body Parser
 app.use(express.json());
 app.use(
@@ -25,12 +18,6 @@ app.all('*', function(req, res, next) {
 
 app.get('/stories', (req, res) => {
   const keys = Object.keys(stories.cache);
-  console.log(keys);
-
-  if (keys.length === 0) {
-    return res.sendStatus(404);
-  }
-
   return res.status(200).json(keys);
 });
 

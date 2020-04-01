@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const stories = {};
 
-stories.cache = {};
-stories.comments = {};
-stories.images = {};
+const stories = {
+  cache: {},
+  comments: {},
+  images: {}
+};
 
 stories.getJson = function(loc) {
   return new Promise((resolve, reject) => {
@@ -32,9 +33,7 @@ stories.updateImage = function(id, img) {
 
   fs.access(file, fs.constants.F_OK, err => {
     if (err) {
-      return console.error(
-        `Error encountered when reading image of story ${id}, ${img}: ${err}`
-      );
+      return console.error(`Error encountered when reading image of story ${id}, ${img}: ${err}`);
     }
 
     if (!(id in stories.images)) {
@@ -59,35 +58,44 @@ stories.updateComments = function(id) {
       return json;
     })
     .catch(err => {
-      console.error(
-        `Error encountered when reading comments of story ${id}: ${err}`
-      );
+      console.error(`Error encountered when reading comments of story ${id}: ${err}`);
+    });
+};
+
+stories.cacheStory = function(i) {
+  return stories
+    .getJson(path.join(__dirname, '..', 'data', i, 'post.json'))
+    .then(json => {
+      stories.cache[i] = json;
+      return json;
+    })
+    .then(() => stories.updateImages(i))
+    .then(() => {
+      // Update the comments if we have no record of them
+      if (!(i in stories.comments)) {
+        stories.updateComments(i);
+      }
+    })
+    .catch(err => {
+      console.error(`Error encountered when reading story: ${err}`);
     });
 };
 
 stories.update = function() {
-  fs.readdir(path.join(__dirname, '..', 'data'), function(err, files) {
-    if (err) {
-      return;
-    }
-
-    files.forEach(i => {
-      // Cache the story itself
-      stories
-        .getJson(path.join(__dirname, '..', 'data', i, 'post.json'))
-        .then(json => {
-          stories.cache[i] = json;
-          return json;
-        })
-        .then(() => stories.updateImages(i))
-        .catch(err => {
-          console.error(`Error encountered when reading story: ${err}`);
-        });
-
-      // Update the comments if we have no record of them - then posting a new comment forces an update
-      if (!(i in stories.comments)) {
-        stories.updateComments(i);
+  return new Promise((resolve, reject) => {
+    fs.readdir(path.join(__dirname, '..', 'data'), function(err, files) {
+      if (err) {
+        return reject(err);
       }
+
+      const promises = [];
+
+      files.forEach(i => {
+        // Cache the story itself
+        promises.push(stories.cacheStory(i));
+      });
+
+      Promise.all(promises).finally(() => resolve(stories.cache));
     });
   });
 };
