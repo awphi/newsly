@@ -1,40 +1,68 @@
 /* eslint-disable no-undef */
 const stories = {};
+var sort = '';
 
-// Fetch the stories
-fetch('http://127.0.0.1:3000/stories')
-  .then(response => response.text())
-  .then(text => JSON.parse(text))
-  .then(stories => {
-    stories.forEach(i => {
-      requestStory(i);
-    });
-  })
-  .catch(err => {
-    console.error(err);
-  });
+$('#sort a').click(function () {
+  sort = this.getAttribute('sort-by');
+  const b = $('#sort button');
+  b.empty();
+  b.text('Sort: ' + this.text);
+  b.append($(this.children[0]).clone());
 
-function requestStory(story) {
-  // For the life of me can't figure out why this doesn't work when it's not parsed twice...
-  fetch('http://127.0.0.1:3000/stories/' + story)
-    .then(response => response.text())
-    .then(text => JSON.parse(text))
-    .then(json => {
-      stories[story] = json;
-      return json;
+  // Refetch & reload stories
+  reloadStories();
+});
+
+$('#sort a[sort-by=date-descending]').click();
+
+function reloadStories() {
+  $('#stories').empty();
+  // Fetch the stories
+  fetch(`http://127.0.0.1:3000/stories-list/${sort}?indices=0-9`)
+    .then(response => response.json())
+    .then(results => {
+      const promises = [];
+      results.forEach(i => {
+        if (!(i in stories)) {
+          promises.push(requestStory(i));
+        } else {
+          promises.push(Promise.resolve(stories[i]));
+        }
+      });
+      return promises;
     })
-    .then(json => loadStoryToDOM(story, json))
+    .then(promises => {
+      Promise.all(promises).then(results => {
+        results.forEach(i => loadStoryToDOM(i));
+      });
+    })
     .catch(err => {
       console.error(err);
     });
 }
 
-function loadStoryToDOM(id, json) {
+function requestStory(story) {
+  console.log(`Story requested: ${story}`);
+  return fetch('http://127.0.0.1:3000/stories/' + story)
+    .then(response => response.json())
+    .then(json => {
+      stories[story] = json;
+      stories[story].id = story;
+      return json;
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+function loadStoryToDOM(json) {
+  const id = json.id;
+
   if (json === undefined) {
     return;
   }
 
-  console.log(`Story received: ${id}, loading: `, json);
+  console.log(`Story loading to DOM: ${id}, loading: `, json);
 
   // Load data from JSON
   const template = document.getElementById('post-card-template');
@@ -43,12 +71,7 @@ function loadStoryToDOM(id, json) {
   card.querySelector('.date').textContent = new Date(json.date).toUTCString();
   card.querySelector('.title').textContent = json.title;
   card.querySelector('.subtitle').textContent = json.subtitle;
-  card
-    .querySelector('.header-image')
-    .setAttribute(
-      'src',
-      'http://127.0.0.1:3000/stories/' + id + '/images/' + json.images[0]
-    );
+  card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json.images[0]);
   card.querySelector('.text-body').textContent = json.body + '...';
   card.querySelector('.post-card').setAttribute('story', id);
 

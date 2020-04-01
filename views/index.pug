@@ -6,15 +6,15 @@ block content
 		.col-lg-6.p-3.h-100
 			.d-flex.flex-row.align-items-center
 				h1.mr-auto.mb-0 All Stories
-				.dropdown
-					button.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown') Sorted by: Date
+				#sort.dropdown
+					button.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown') Sort: Date (Descending)
 						i.far.fa-clock.ml-2
 					.dropdown-menu.dropdown-menu-right
-						a.dropdown-item(href='#', sort-by='date') Date
+						a.dropdown-item(href='#', sort-by='date-descending') Date (Descending)
 							i.far.fa-clock.ml-2
-						a.dropdown-item(href='#', sort-by='comments') Comments
+						a.dropdown-item(href='#', sort-by='comments-descending') Comments (Descending)
 							i.far.fa-comments.ml-2
-						a.dropdown-item(href='#', sort-by='popularity') Popularity
+						a.dropdown-item(href='#', sort-by='popularity-descending') Popularity (Descending)
 							i.far.fa-thumbs-up.ml-2
 			hr
 			#stories
