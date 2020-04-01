@@ -11,27 +11,27 @@ const stories = {
   sorts: [
     {
       id: 'date-ascending',
-      comparator: (a, b) => a.date - b.date
+      comparator: (a, b) => stories.cache[a].date - stories.cache[b].date
     },
     {
       id: 'date-descending',
-      comparator: (a, b) => b.date - a.date
+      comparator: (a, b) => stories.cache[b].date - stories.cache[a].date
     },
     {
       id: 'comments-ascending',
-      comparator: (a, b) => this.comments[a].length - this.comments[b].length
+      comparator: (a, b) => stories.comments[a].length - stories.comments[b].length
     },
     {
       id: 'comments-descending',
-      comparator: (a, b) => this.comments[b].length - this.comments[a].length
+      comparator: (a, b) => stories.comments[b].length - stories.comments[a].length
     },
     {
       id: 'popularity-ascending',
-      comparator: (a, b) => this.views[a] - this.views[b]
+      comparator: (a, b) => stories.views[a] - stories.views[b]
     },
     {
       id: 'popularity-descending',
-      comparator: (a, b) => this.views[b] - this.views[a]
+      comparator: (a, b) => stories.views[b] - stories.views[a]
     }
   ]
 };
@@ -122,7 +122,7 @@ stories.updateImages = function (id) {
 };
 
 stories.updateComments = function (id) {
-  stories
+  return stories
     .getJson(path.join(__dirname, '..', 'data', id, 'comments.json'))
     .then(json => {
       stories.comments[id] = json;
@@ -137,16 +137,11 @@ stories.cacheStory = function (i) {
   return stories
     .getJson(path.join(__dirname, '..', 'data', i, 'post.json'))
     .then(json => {
-      stories.views[i] = 0;
+      if (!(i in stories.views)) {
+        stories.views[i] = 0;
+      }
       stories.cache[i] = json;
       return json;
-    })
-    .then(() => stories.updateImages(i))
-    .then(() => {
-      // Update the comments if we have no record of them
-      if (!(i in stories.comments)) {
-        stories.updateComments(i);
-      }
     })
     .catch(err => {
       console.error(`Error encountered when reading story: ${err}`);
@@ -167,11 +162,26 @@ stories.update = function () {
         promises.push(stories.cacheStory(i));
       });
 
+      // Cache the comments
+      files.forEach(i => {
+        promises.push(stories.updateComments(i));
+      });
+
+      // Once all stories + comments are in the cache:
       Promise.all(promises)
-        .then(p => {
+        .then(promises => {
+          // Update images
+          Object.keys(stories.cache).forEach(i => {
+            stories.updateImages(i);
+          });
+
+          // Sort the stories
           stories.sorts.forEach(i => {
             stories.orders[i.id] = Object.keys(stories.cache).sort(i.comparator);
           });
+        })
+        .catch(e => {
+          console.error(e);
         })
         .finally(() => resolve(stories.cache));
     });

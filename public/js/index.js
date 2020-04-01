@@ -1,22 +1,43 @@
 /* eslint-disable no-undef */
 const stories = {};
+
 var sort = '';
 
-$('#sort a').click(function () {
-  sort = this.getAttribute('sort-by');
-  const b = $('#sort button');
-  b.empty();
-  b.text('Sort: ' + this.text);
-  b.append($(this.children[0]).clone());
+Node.prototype.empty = function () {
+  while (this.firstChild) {
+    this.firstChild.remove();
+  }
+};
 
-  // Refetch & reload stories
-  reloadStories();
+document.querySelectorAll('#sort a').forEach(i => {
+  i.onclick = function () {
+    sort = this.getAttribute('sort-by');
+
+    const b = document.querySelector('#sort button');
+    b.empty();
+
+    b.textContent = 'Sort: ' + this.text;
+    b.appendChild(this.children[0].cloneNode());
+
+    // Refetch & reload stories
+    reloadStories();
+  };
 });
 
-$('#sort a[sort-by=date-descending]').click();
+document.querySelector('.search-field').onkeydown = function (e) {
+  if (e.keyCode === 13) {
+    document.querySelector('.search-btn').click();
+  }
+};
+
+document.querySelector('.search-btn').onclick = function () {
+  console.log('searching...');
+};
+
+document.querySelector('#sort a[sort-by=date-descending]').click();
 
 function reloadStories() {
-  $('#stories').empty();
+  document.querySelector('#stories').empty();
   // Fetch the stories
   fetch(`http://127.0.0.1:3000/stories-list/${sort}?indices=0-9`)
     .then(response => response.json())
@@ -62,7 +83,7 @@ function loadStoryToDOM(json) {
     return;
   }
 
-  console.log(`Story loading to DOM: ${id}, loading: `, json);
+  console.log(`Story loading to DOM: ${id}:`, json);
 
   // Load data from JSON
   const template = document.getElementById('post-card-template');
@@ -78,7 +99,7 @@ function loadStoryToDOM(json) {
   const $card = $(card.querySelector('.post-card-wrapper'));
   const $readMore = $(card.querySelector('button'));
 
-  // Animations
+  // jQuery animation for read more (simplest way to implement this seeing as how bootstrap requires jQuery anyways)
   $card.hover(
     () => {
       // On hover
