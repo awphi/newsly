@@ -2,11 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Server module for programming summative.",
-  "main": "node server.js",
+  "main": "node app/server.js",
   "scripts": {
     "pretest": "eslint --fix public/js/**/*.js app/**/*.js",
     "test": "jest",
-    "dev": "concurrently \"pug --watch ./views --out ./public\" \"nodemon server.js\"",
+    "dev": "concurrently \"pug --watch ./views --out ./public\" \"nodemon app/server.js\"",
     "build": "pug ./views --out ./public --pretty"
   },
   "author": "awphi",

@@ -28,9 +28,9 @@ stories.getImage = function(id, img) {
 };
 
 stories.updateImage = function(id, img) {
-  const file = path.join(__dirname, 'data', id, img + '.png');
+  const file = path.join(__dirname, '..', 'data', id, img + '.png');
 
-  fs.access(file, fs.constants.F_OK, (err) => {
+  fs.access(file, fs.constants.F_OK, err => {
     if (err) {
       console.log(
         `Error encountered when reading image of story ${id}, ${img}: ${err}`
@@ -47,19 +47,19 @@ stories.updateImage = function(id, img) {
 };
 
 stories.updateImages = function(id) {
-  stories.cache[id].images.forEach((i) => {
+  stories.cache[id].images.forEach(i => {
     stories.updateImage(id, i);
   });
 };
 
 stories.updateComments = function(id) {
   stories
-    .getJson(path.join(__dirname, 'data', id, 'comments.json'))
-    .then((json) => {
+    .getJson(path.join(__dirname, '..', 'data', id, 'comments.json'))
+    .then(json => {
       stories.comments[id] = json;
       return json;
     })
-    .catch((err) =>
+    .catch(err =>
       console.log(
         `Error encountered when reading comments of story ${id}: ${err}`
       )
@@ -67,21 +67,21 @@ stories.updateComments = function(id) {
 };
 
 stories.update = function() {
-  fs.readdir(path.join(__dirname, 'data'), function(err, files) {
+  fs.readdir(path.join(__dirname, '..', 'data'), function(err, files) {
     if (err) {
       return;
     }
 
-    files.forEach((i) => {
+    files.forEach(i => {
       // Cache the story itself
       stories
-        .getJson(path.join(__dirname, 'data', i, 'post.json'))
-        .then((json) => {
+        .getJson(path.join(__dirname, '..', 'data', i, 'post.json'))
+        .then(json => {
           stories.cache[i] = json;
           return json;
         })
         .then(() => stories.updateImages(i))
-        .catch((err) =>
+        .catch(err =>
           console.log(`Error encountered when reading story: ${err}`)
         );
 
