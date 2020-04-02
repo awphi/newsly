@@ -1,12 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+// TODO save stories cache + comments back to disk on server shutdown
 const stories = {
   cache: {},
   comments: {},
   images: {},
-  // Only tracks views this server session - unneeded for the scope of this project to to save back to disk & load from disk
-  views: {},
   orders: {},
   sorts: [
     {
@@ -27,11 +26,11 @@ const stories = {
     },
     {
       id: 'popularity-ascending',
-      comparator: (a, b) => stories.views[a] - stories.views[b]
+      comparator: (a, b) => stories.cache[a].views - stories.cache[b].views
     },
     {
       id: 'popularity-descending',
-      comparator: (a, b) => stories.views[b] - stories.views[a]
+      comparator: (a, b) => stories.cache[b].views - stories.cache[a].views
     }
   ]
 };
@@ -100,7 +99,7 @@ stories.getImage = function (id, img) {
 };
 
 stories.updateImage = function (id, img) {
-  const file = path.join(__dirname, '..', 'data', id, img + '.png');
+  const file = path.join('data', id, img + '.png');
 
   fs.access(file, fs.constants.F_OK, err => {
     if (err) {
@@ -123,7 +122,7 @@ stories.updateImages = function (id) {
 
 stories.updateComments = function (id) {
   return stories
-    .getJson(path.join(__dirname, '..', 'data', id, 'comments.json'))
+    .getJson(path.join('data', id, 'comments.json'))
     .then(json => {
       stories.comments[id] = json;
       return json;
@@ -135,11 +134,8 @@ stories.updateComments = function (id) {
 
 stories.cacheStory = function (i) {
   return stories
-    .getJson(path.join(__dirname, '..', 'data', i, 'post.json'))
+    .getJson(path.join('data', i, 'post.json'))
     .then(json => {
-      if (!(i in stories.views)) {
-        stories.views[i] = 0;
-      }
       stories.cache[i] = json;
       return json;
     })
@@ -148,9 +144,16 @@ stories.cacheStory = function (i) {
     });
 };
 
+stories.resort = function () {
+  // Sort the stories
+  stories.sorts.forEach(i => {
+    stories.orders[i.id] = Object.keys(stories.cache).sort(i.comparator);
+  });
+};
+
 stories.update = function () {
   return new Promise((resolve, reject) => {
-    fs.readdir(path.join(__dirname, '..', 'data'), function (err, files) {
+    fs.readdir(path.join('data'), function (err, files) {
       if (err) {
         return reject(err);
       }
@@ -175,10 +178,7 @@ stories.update = function () {
             stories.updateImages(i);
           });
 
-          // Sort the stories
-          stories.sorts.forEach(i => {
-            stories.orders[i.id] = Object.keys(stories.cache).sort(i.comparator);
-          });
+          stories.resort();
         })
         .catch(e => {
           console.error(e);

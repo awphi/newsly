@@ -17,6 +17,11 @@ app.all('*', function (req, res, next) {
   next();
 });
 
+app.get('/stories-list', (req, res) => {
+  // Default sort is date descending (newest to oldest)
+  return res.redirect('/stories-list/date-descending');
+});
+
 app.get('/stories-list/:sort', (req, res) => {
   const indices = stories.getIndices('indices' in req.query ? String(req.query.indices) : '0-9');
   const sort = stories.getSort(String(req.params.sort));
@@ -37,7 +42,7 @@ app.get('/stories/:storyId', function (req, res) {
   const story = req.params.storyId;
 
   if (story in stories.cache) {
-    stories.views[story]++;
+    stories.cache[story].views++;
     return res.status(200).json(stories.cache[story]);
   }
 
