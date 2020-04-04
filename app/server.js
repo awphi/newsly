@@ -3,19 +3,15 @@ const app = require('./app');
 const stories = require('./stories');
 const hostname = '0.0.0.0';
 const port = 3000;
-// TODO control with environment var
-const updateTime = 300;
-
-// Set the timer to update stories on server load
-// Every 300 seconds (5 minutes) - update the stories into the cache
-setInterval(stories.update, updateTime * 1000);
-stories.update();
 
 app.set('port', port);
 
 const server = http.createServer(app);
 
-server.listen(port, hostname);
+stories
+  .load()
+  .then(() => server.listen(port, hostname))
+  .catch((e) => console.error(e));
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -43,4 +39,5 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   console.log('Listening on ' + bind);
+  stories.load();
 }
