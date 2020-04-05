@@ -1,6 +1,6 @@
 const path = require('path');
 const Story = require('./story');
-const io = require('./io-helper');
+const promiseFs = require('./promise-fs');
 
 const storyManager = {
   stories: {},
@@ -14,19 +14,24 @@ const storyManager = {
   }
 };
 
+storyManager.addStory = function (id) {
+  storyManager.stories[id] = new Story(id);
+  return storyManager.stories[id].load().catch((e) => console.error(e));
+};
+
 storyManager.load = function () {
   return new Promise((resolve, reject) => {
-    io.promiseDirectoryContents(path.join('data'))
+    promiseFs
+      .promiseDirectoryContents(path.join('data'))
       .then((files) => {
         const promises = [];
 
         files.forEach((i) => {
-          this.stories[i] = new Story(i);
-          promises.push(this.stories[i].load());
+          promises.push(storyManager.addStory(i));
         });
 
         Promise.all(promises).finally(() => {
-          resolve(this.stories);
+          resolve(storyManager.stories);
         });
       })
       .catch((err) => {
@@ -35,45 +40,30 @@ storyManager.load = function () {
   });
 };
 
-storyManager.getIndices = function (indices) {
-  const exe = /(\d+)-(\d+)/g.exec(indices);
-  if (exe[0].length === indices.length) {
-    const a = Number(exe[1]);
-    const b = Number(exe[2]);
-
-    // Ensures: non-negative values && return[1] > return[0] && no more than 10 stories at once
-    if (a <= b && a >= 0 && b >= 0 && Math.abs(b - a) < 10) {
-      return [a, b];
-    }
-  }
-
-  return null;
-};
-
 storyManager.getSortFromString = function (st) {
-  if (st in this.sorts) {
-    return this.sorts[st];
+  if (st in storyManager.sorts) {
+    return storyManager.sorts[st];
   }
 
   return null;
 };
 
 storyManager.keys = function () {
-  return Object.keys(this.stories);
+  return Object.keys(storyManager.stories);
 };
 
-storyManager.listStories = function (sort, lowerBound, upperBound, search = null) {
-  const slice = this.keys()
-    .sort(this.sorts[sort])
-    .slice(lowerBound, upperBound + 1);
+storyManager.listStories = function (sort, search = null) {
+  // Performance could be obviously improved with caching but out of the scope for this project
+  const keys = storyManager.keys().sort(storyManager.sorts[sort]);
+
   if (search === null) {
-    return slice;
+    return keys;
   }
 
-  // Simple, non-case-senstive, linear search of title field, to widen search range increase the indices values
+  // Simple, non-case-senstive, linear search of title field (again obviously improved with caching)
   const result = [];
-  slice.forEach((i) => {
-    if (this.stories[i].title.toLowerCase().includes(search.toLowerCase())) {
+  keys.forEach((i) => {
+    if (storyManager.stories[i].title.toLowerCase().includes(search.toLowerCase())) {
       result.push(i);
     }
   });

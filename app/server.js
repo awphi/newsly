@@ -1,6 +1,6 @@
 const http = require('http');
 const app = require('./app');
-const stories = require('./stories');
+const stories = require('./story-manager');
 const hostname = '0.0.0.0';
 const port = 3000;
 

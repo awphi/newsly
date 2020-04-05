@@ -9,7 +9,7 @@ Node.prototype.empty = function () {
   }
 };
 
-document.querySelectorAll('#sort a').forEach(i => {
+document.querySelectorAll('#sort a').forEach((i) => {
   i.onclick = function () {
     sort = this.getAttribute('sort-by');
 
@@ -40,10 +40,10 @@ function reloadStories() {
   document.querySelector('#stories').empty();
   // Fetch the stories
   fetch(`http://127.0.0.1:3000/stories-list/${sort}?indices=0-9`)
-    .then(response => response.json())
-    .then(results => {
+    .then((response) => response.json())
+    .then((results) => {
       const promises = [];
-      results.forEach(i => {
+      results.forEach((i) => {
         if (!(i in stories)) {
           promises.push(requestStory(i));
         } else {
@@ -52,12 +52,12 @@ function reloadStories() {
       });
       return promises;
     })
-    .then(promises => {
-      Promise.all(promises).then(results => {
-        results.forEach(i => loadStoryToDOM(i));
+    .then((promises) => {
+      Promise.all(promises).then((results) => {
+        results.forEach((i) => loadStoryToDOM(i));
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
     });
 }
@@ -65,13 +65,13 @@ function reloadStories() {
 function requestStory(story) {
   console.log(`Story requested: ${story}`);
   return fetch('http://127.0.0.1:3000/stories/' + story)
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       stories[story] = json;
       stories[story].id = story;
       return json;
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
     });
 }
@@ -92,7 +92,7 @@ function loadStoryToDOM(json) {
   card.querySelector('.date').textContent = new Date(json.date).toUTCString();
   card.querySelector('.title').textContent = json.title;
   card.querySelector('.subtitle').textContent = json.subtitle;
-  card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json.images[0]);
+  card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json._imageIds[0]);
   card.querySelector('.text-body').textContent = json.body + '...';
   card.querySelector('.post-card').setAttribute('story', id);
 

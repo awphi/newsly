@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 const fs = jest.genMockFromModule('fs');
 const path = require('path');
 var mockFiles = {};

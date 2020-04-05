@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Comment = require('./comment');
-const io = require('./io-helper');
+const promiseFs = require('./promise-fs');
 
 module.exports = class Story {
   constructor(id) {
@@ -36,7 +36,7 @@ module.exports = class Story {
   }
 
   loadComments() {
-    return io
+    return promiseFs
       .promiseJson(path.join('data', this.id, 'comments.json'))
       .then((json) => {
         this.comments.push(new Comment(json.author, json.date, json.body));
@@ -48,7 +48,7 @@ module.exports = class Story {
   }
 
   loadContent() {
-    return io
+    return promiseFs
       .promiseJson(path.join('data', this.id, 'post.json'))
       .then((json) => {
         this.body = json.body;
@@ -79,7 +79,7 @@ module.exports = class Story {
   }
 
   load() {
-    return Promise.all([this.loadContent(), this.loadComments()]).then((p) => {
+    return Promise.all([this.loadContent(), this.loadComments()]).then(() => {
       this.loadImages();
     });
   }

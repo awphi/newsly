@@ -1,32 +1,32 @@
 /* eslint-disable no-undef */
-const app = require('./app');
+const app = require('../app');
 const request = require('supertest');
-const stories = require('./stories');
-jest.mock('fs');
+const stories = require('../story-manager');
 const fs = require('fs');
 
+jest.mock('fs');
+
 beforeAll(() => {
-  // Mock files to be used for tests
   fs.__setMockFiles({
     data: {
       test_story_1: {
         'post.json':
           '{"title": "Test Story 1 CATDOG", "views": 13, "subtitle": "Irrelevant subtitle here.","author": "John Doe","date": 1583430030752,"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.","images": ["image1", "image2"]}',
         'comments.json': '[{"author": "Julio Marucci","date": 1583430279222,"content": "Refried beans!"}]',
-        'image1.png': 'IMAGE_CONTENT',
-        'image2.png': 'IMAGE_CONTENT'
+        'image1.png': 'IMAGE BINARY',
+        'image2.png': 'IMAGE BINARY'
       },
       test_story_2: {
         'post.json':
           '{"title": "Test Story 2", "views": 2, "subtitle": "Irrelevant subtitle here.","author": "John Doe","date": 1580430030752,"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.","images": ["image"]}',
         'comments.json': '[{"author": "Julio Marucci","date": 1483430279222,"content": "Refried beans!"}]',
-        'image.png': 'IMAGE_CONTENT'
+        'image.png': 'IMAGE BINARY'
       },
       test_story_3: {
         'post.json':
           '{"title": "Test Story 3", "views": 14, "subtitle": "Irrelevant subtitle here.","author": "John Doe","date": 1283430030752,"body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.","images": ["header"]}',
         'comments.json': '[{"author": "Julio Marucci","date": 1383430279222,"content": "Refried beans!"}]',
-        'header.png': 'IMAGE_CONTENT'
+        'header.png': 'IMAGE BINARY'
       }
     }
   });
@@ -48,14 +48,6 @@ describe('GET endpoints', () => {
       .get('/stories-list/date-descending')
       .expect('Content-type', 'application/json; charset=utf-8')
       .expect((res) => expect(typeof res.body).toEqual('object'))
-      .expect(200, done);
-  });
-
-  it('/stories-list/date-descending?indices=0-0 returns just 1 story', (done) => {
-    request(app)
-      .get('/stories-list/date-descending?indices=0-0')
-      .expect('Content-type', 'application/json; charset=utf-8')
-      .expect((res) => expect(res.body.length).toEqual(1))
       .expect(200, done);
   });
 
