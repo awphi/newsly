@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
-const stories = {};
-
-var sort = '';
+var currentSort = '';
+var currentSeach = null;
 
 Node.prototype.empty = function () {
   while (this.firstChild) {
@@ -11,7 +10,7 @@ Node.prototype.empty = function () {
 
 document.querySelectorAll('#sort a').forEach((i) => {
   i.onclick = function () {
-    sort = this.getAttribute('sort-by');
+    currentSort = this.getAttribute('sort-by');
 
     const b = document.querySelector('#sort button');
     b.empty();
@@ -31,49 +30,20 @@ document.querySelector('.search-field').onkeydown = function (e) {
 };
 
 document.querySelector('.search-btn').onclick = function () {
-  console.log('searching...');
+  const search = document.querySelector('.search-field').value;
+  currentSeach = search === '' ? null : search;
+  reloadStories();
 };
 
 document.querySelector('#sort a[sort-by=date-descending]').click();
 
 function reloadStories() {
-  document.querySelector('#stories').empty();
-  // Fetch the stories
-  fetch(`http://127.0.0.1:3000/stories-list/${sort}?indices=0-9`)
-    .then((response) => response.json())
-    .then((results) => {
-      const promises = [];
-      results.forEach((i) => {
-        if (!(i in stories)) {
-          promises.push(requestStory(i));
-        } else {
-          promises.push(Promise.resolve(stories[i]));
-        }
-      });
-      return promises;
-    })
-    .then((promises) => {
-      Promise.all(promises).then((results) => {
-        results.forEach((i) => loadStoryToDOM(i));
-      });
-    })
-    .catch((err) => {
-      console.error(err);
+  ApiClient.loadStories(currentSort, currentSeach).then((stories) => {
+    document.querySelector('#stories').empty();
+    stories.forEach((i) => {
+      loadStoryToDOM(i);
     });
-}
-
-function requestStory(story) {
-  console.log(`Story requested: ${story}`);
-  return fetch('http://127.0.0.1:3000/stories/' + story)
-    .then((response) => response.json())
-    .then((json) => {
-      stories[story] = json;
-      stories[story].id = story;
-      return json;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  });
 }
 
 function loadStoryToDOM(json) {
