@@ -16,7 +16,85 @@ info:
 servers:
   - url: 'http://127.0.0.1:3000'
     description: dev
-paths: {}
+paths:
+  /stories-list:
+    parameters: []
+    get:
+      summary: Obtain list of story IDs
+      tags:
+        - stories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Strings returned are all story IDs
+                items:
+                  type: string
+        '400':
+          description: |-
+            Bad Request
+            Returned if sort or search query params did not pass validation rules.
+          headers: {}
+          content:
+            text/html:
+              schema:
+                type: string
+                description: Bad Request
+              examples:
+                example-1: {}
+      operationId: get-stories-list-sort
+      description: Retrieve all the stories loaded on the server in a given order with or without a given search parameter.
+      parameters:
+        - schema:
+            type: string
+            minLength: 3
+          in: query
+          name: search
+          description: String to search the titles of news stories with.
+        - schema:
+            type: string
+            enum:
+              - date-ascending
+              - date-descending
+              - popularity-ascending
+              - popularity-descending
+              - comments-ascending
+              - comments-descending
+            default: date-descending
+          in: query
+          name: sort
+          description: Type of sort to use for the retured list.
+  '/stories/{storyId}':
+    parameters:
+      - schema:
+          type: string
+        name: storyId
+        in: path
+        required: true
+        description: Story ID of the story you want to retrieve.
+    get:
+      summary: Obtain data on story
+      tags:
+        - stories
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/story'
+        '400':
+          description: Bad Request
+          content:
+            text/html:
+              schema:
+                type: string
+                description: Bad Request
+      operationId: get-stories-storyId
+      description: 'Retrieve the data on a given story from its ID. IDs are usually obtained with the [stories-list endpoint](get-stories-list-sort).'
 components:
   schemas:
     story:
@@ -25,6 +103,7 @@ components:
       x-tags:
         - models
         - stories
+      description: Representation of a story.
       properties:
         id:
           type: string
@@ -48,7 +127,23 @@ components:
           type: array
           items:
             type: string
-      description: Representation of a story.
+      required:
+        - author
+        - title
+        - subtitle
+        - body
+      x-examples:
+        example-1:
+          title: HEADLINE
+          subtitle: SUBTITLE
+          author: Genghis Khan
+          date: 1583430030752
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+          _imageIds:
+            - header
+            - bonus
+            - bonus1
+          _views: 12
     comment:
       title: comment
       type: object
@@ -68,4 +163,10 @@ components:
         - body
       x-tags:
         - models
+        - comments
       description: Representation of a user-comment on a story.
+      x-examples:
+        example-1:
+          author: John Doe
+          date: 1583430279222
+          body: 'Comment content!'
