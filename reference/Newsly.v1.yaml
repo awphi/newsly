@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  title: Newsly
+  version: '1.0'
+  contact:
+    name: awphi
+    url: 'https://github.com/awphi'
+    email: admin@adamw.ph
+  description: |
+    # Newsly API
+    ## Description
+    Developed as part of a programming summative for Programming Year 1 @ Durham University. Intended to interface with the newsly client written using bootstrap with vanilla CSS, JS & HTML.
+
+    ## Notes
+    As a simple API (as per the design spec of the project) there is no authentication, usage limits or database whatsoever. Performance therefore may be subpar if a large number of stories are loaded. It follows that the API will also suffer from security issues like comment/story spamming as there is no limits or authentication to prevent this.
+servers:
+  - url: 'http://127.0.0.1:3000'
+    description: dev
+paths: {}
+components:
+  schemas:
+    story:
+      title: story
+      type: object
+      x-tags:
+        - models
+        - stories
+      properties:
+        id:
+          type: string
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/comment'
+        author:
+          type: string
+        title:
+          type: string
+        subtitle:
+          type: string
+        body:
+          type: string
+        date:
+          type: integer
+        _views:
+          type: integer
+        _imageIds:
+          type: array
+          items:
+            type: string
+      description: Representation of a story.
+    comment:
+      title: comment
+      type: object
+      properties:
+        author:
+          type: string
+          description: Author of the comment (set by the original comment creator)
+        date:
+          type: integer
+          description: Timestamp at which the comment was posted
+        body:
+          type: string
+          description: |
+            Main content of comment
+      required:
+        - author
+        - body
+      x-tags:
+        - models
+      description: Representation of a user-comment on a story.
