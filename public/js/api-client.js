@@ -11,9 +11,8 @@ const ApiClient = {
     return fetch('http://127.0.0.1:3000/stories/' + id)
       .then((response) => response.json())
       .then((json) => {
-        json.id = id;
         this.cache[id] = json;
-        return this.cache[id];
+        return json;
       })
       .catch((err) => {
         console.error(err);

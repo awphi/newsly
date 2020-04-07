@@ -57,7 +57,6 @@ module.exports = class Story {
         this.subtitle = json.subtitle;
         this.date = json.date;
         this._imageIds = json.images;
-        this._comments = json.comments;
         this._views = json.views;
         return this;
       })

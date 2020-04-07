@@ -20,24 +20,20 @@ storyManager.addStory = function (id) {
 };
 
 storyManager.load = function () {
-  return new Promise((resolve, reject) => {
-    promiseFs
-      .promiseDirectoryContents(path.join('data'))
-      .then((files) => {
-        const promises = [];
+  return promiseFs
+    .promiseDirectoryContents(path.join('data'))
+    .then((files) => {
+      const promises = [];
 
-        files.forEach((i) => {
-          promises.push(storyManager.addStory(i));
-        });
-
-        Promise.all(promises).finally(() => {
-          resolve(storyManager.stories);
-        });
-      })
-      .catch((err) => {
-        reject(err);
+      files.forEach((i) => {
+        promises.push(storyManager.addStory(i));
       });
-  });
+
+      return Promise.all(promises);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 storyManager.getSortFromString = function (st) {

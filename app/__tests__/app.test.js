@@ -3,6 +3,8 @@ const app = require('../app');
 const request = require('supertest');
 const stories = require('../story-manager');
 const mock = require('mock-fs');
+const fs = require('fs');
+
 const testData = {
   data: {
     test_story_1: {
@@ -17,8 +19,8 @@ const testData = {
         images: ['image1', 'image2']
       }),
       'comments.json': JSON.stringify([{ author: 'Julio Marucci', date: 1583430279222, content: 'Refried beans!' }]),
-      'image1.png': 'IMAGE BINARY',
-      'image2.png': 'IMAGE BINARY'
+      'image1.png': Buffer.from([0xdeadbeef]),
+      'image2.png': Buffer.from([0])
     },
     test_story_2: {
       'post.json': JSON.stringify({
@@ -32,7 +34,7 @@ const testData = {
         images: ['image']
       }),
       'comments.json': JSON.stringify([{ author: 'Julio Marucci', date: 1483430279222, content: 'Refried beans!' }]),
-      'image.png': 'IMAGE BINARY'
+      'image.png': Buffer.from([0])
     },
     test_story_3: {
       'post.json': JSON.stringify({
@@ -46,14 +48,18 @@ const testData = {
         images: ['header']
       }),
       'comments.json': JSON.stringify([{ author: 'Julio Marucci', date: 1383430279222, content: 'Refried beans!' }]),
-      'header.png': 'IMAGE BINARY'
+      'header.png': Buffer.from([0])
     }
   }
 };
 
+beforeAll(() => {
+  mock(testData);
+  return stories.load();
+});
+
 beforeEach(() => {
   mock(testData);
-  stories.load();
 });
 
 afterEach(() => {
@@ -61,11 +67,20 @@ afterEach(() => {
 });
 
 describe('GET endpoints', () => {
+  it('reading data/test_story_1/image1.png gives 0xDEADBEEF (testing mocked fs)', () => {
+    const file = fs.readFileSync('data/test_story_1/image1.png');
+    expect(file).toEqual(Buffer.from([0xdeadbeef]));
+  });
+
+  it('/stories/test_story_1/images/image1 returns PNG 200 (OK)', (done) => {
+    request(app).get('/stories/test_story_1/images/image1').expect('Content-Type', 'image/png').expect(200, done);
+  });
+
   it('/stories-list/null returns 400 (bad request)', (done) => {
     request(app).get('/stories-list/null').expect(400, done);
   });
 
-  it('/stories-list redirects (code 302) to /stories-list/date-descending', (done) => {
+  it('/stories-list 302s (redirects) to /stories-list/date-descending', (done) => {
     request(app).get('/stories-list').expect('Location', '/stories-list/date-descending').expect(302, done);
   });
 
