@@ -18,15 +18,10 @@ app.all('*', function (req, res, next) {
 });
 
 app.get('/stories-list', (req, res) => {
-  // Default sort is date descending (newest to oldest)
-  return res.redirect('/stories-list/date-descending');
-});
+  const sort = 'sort' in req.query ? storyManager.getSortFromString(String(req.query.sort)) : 'date-descending';
+  const search = 'search' in req.query && req.query.search.length >= 3 ? String(req.query.search) : null;
 
-app.get('/stories-list/:sort', (req, res) => {
-  const sort = storyManager.getSortFromString(String(req.params.sort));
-  var search = 'search' in req.query && req.query.search.length >= 3 ? String(req.query.search) : null;
-
-  if (sort === null) {
+  if (sort === null || search === null) {
     return res.sendStatus(400);
   }
 

@@ -76,14 +76,6 @@ describe('GET endpoints', () => {
     request(app).get('/stories/test_story_1/images/image1').expect('Content-Type', 'image/png').expect(200, done);
   });
 
-  it('/stories-list/null returns 400 (bad request)', (done) => {
-    request(app).get('/stories-list/null').expect(400, done);
-  });
-
-  it('/stories-list 302s (redirects) to /stories-list/date-descending', (done) => {
-    request(app).get('/stories-list').expect('Location', '/stories-list/date-descending').expect(302, done);
-  });
-
   it('/stories-list/date-descending returns JSON list', (done) => {
     request(app)
       .get('/stories-list/date-descending')
