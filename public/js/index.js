@@ -47,7 +47,7 @@ function reloadStories() {
 }
 
 function loadStoryToDOM(json) {
-  const id = json.id;
+  const id = json._id;
 
   if (json === undefined) {
     return;
@@ -62,7 +62,7 @@ function loadStoryToDOM(json) {
   card.querySelector('.date').textContent = new Date(json.date).toUTCString();
   card.querySelector('.title').textContent = json.title;
   card.querySelector('.subtitle').textContent = json.subtitle;
-  card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json._imageIds[0]);
+  card.querySelector('.header-image').setAttribute('src', 'http://127.0.0.1:3000/stories/' + id + '/images/' + json.images[0]);
   card.querySelector('.text-body').textContent = json.body + '...';
   card.querySelector('.post-card').setAttribute('story', id);
 

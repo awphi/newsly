@@ -55,7 +55,7 @@ const testData = {
 
 beforeAll(() => {
   mock(testData);
-  return stories.load();
+  return stories.loadAll();
 });
 
 beforeEach(() => {

@@ -19,7 +19,7 @@ storyManager.addStory = function (id) {
   return storyManager.stories[id].load().catch((e) => console.error(e));
 };
 
-storyManager.load = function () {
+storyManager.loadAll = function () {
   return promiseFs
     .promiseDirectoryContents(path.join('data'))
     .then((files) => {
@@ -34,6 +34,16 @@ storyManager.load = function () {
     .catch((err) => {
       console.error(err);
     });
+};
+
+storyManager.saveAll = function () {
+  const promises = [];
+
+  storyManager.keys().forEach((i) => {
+    promises.push(storyManager.stories[i].save());
+  });
+
+  return Promise.all(promises);
 };
 
 storyManager.getSortFromString = function (st) {

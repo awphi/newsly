@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
-const stories = require('./story-manager');
+const storyManager = require('./story-manager');
+
 const hostname = '0.0.0.0';
 const port = 3000;
 
@@ -8,12 +9,16 @@ app.set('port', port);
 
 const server = http.createServer(app);
 
-stories
-  .load()
+storyManager
+  .loadAll()
   .then(() => server.listen(port, hostname))
   .catch((e) => console.error(e));
+
 server.on('error', onError);
 server.on('listening', onListening);
+
+process.on('SIGINT', onExit);
+process.on('SIGTERM', onExit);
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -39,5 +44,10 @@ function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   console.log('Listening on ' + bind);
-  stories.load();
+}
+
+function onExit() {
+  storyManager.saveAll().then(() => {
+    process.exit();
+  });
 }

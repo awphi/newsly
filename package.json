@@ -2,8 +2,8 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Server module for programming summative.",
-  "main": "node app/server.js",
   "scripts": {
+    "start": "node app/server.js",
     "pretest": "eslint --fix public/js/**/*.js app/**/*.js",
     "test": "jest",
     "dev": "concurrently \"pug --watch ./views --out ./public\" \"nodemon app/server.js\"",
@@ -24,6 +24,7 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
+    "@godaddy/terminus": "^4.3.1",
     "express": "^4.17.1",
     "mock-fs": "^4.11.0"
   }

@@ -34,9 +34,9 @@ const ApiClient = {
     });
   },
   listStories: function (sort, search) {
-    var query = `http://127.0.0.1:3000/stories-list/${sort}`;
+    var query = `http://127.0.0.1:3000/stories-list?sort=${sort}`;
     if (search !== null) {
-      query += `?search=${search}`;
+      query += `&search=${search}`;
     }
 
     return fetch(query)

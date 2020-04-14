@@ -21,7 +21,7 @@ app.get('/stories-list', (req, res) => {
   const sort = 'sort' in req.query ? storyManager.getSortFromString(String(req.query.sort)) : 'date-descending';
   const search = 'search' in req.query && req.query.search.length >= 3 ? String(req.query.search) : null;
 
-  if (sort === null || search === null) {
+  if (sort === null) {
     return res.sendStatus(400);
   }
 
