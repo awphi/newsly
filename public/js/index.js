@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 var currentSort = '';
 var currentSeach = null;
+var isStoryOpen = false;
 
 Node.prototype.empty = function () {
   while (this.firstChild) {
@@ -23,6 +24,8 @@ document.querySelectorAll('#sort a').forEach((i) => {
   };
 });
 
+document.querySelector('#outside-area').onclick = closeStory;
+
 document.querySelector('.search-field').onkeydown = function (e) {
   if (e.keyCode === 13) {
     document.querySelector('.search-btn').click();
@@ -36,6 +39,53 @@ document.querySelector('.search-btn').onclick = function () {
 };
 
 document.querySelector('#sort a[sort-by=date-descending]').click();
+
+function openStory(storyId) {
+  if (isStoryOpen) {
+    return;
+  }
+
+  isStoryOpen = true;
+
+  const viewer = document.querySelector('#story-viewer');
+  const json = ApiClient.cache[storyId];
+
+  viewer.querySelector('.title').textContent = json.title;
+  viewer.querySelector('.subtitle').textContent = json.subtitle;
+  viewer.querySelector('.author').textContent = 'by ' + json.author;
+  viewer.querySelector('.date').textContent = new Date(json.date).toUTCString();
+  viewer.querySelector('.text-body').textContent = json.body;
+
+  const carousel = viewer.querySelector('.carousel-inner');
+  carousel.empty();
+
+  for (let i = 0; i < json.images.length; i++) {
+    const element = json.images[i];
+    const div = document.createElement('div');
+    const img = document.createElement('div');
+
+    div.classList.add('carousel-item');
+    if (i === 0) {
+      div.classList.add('active');
+    }
+
+    img.style.backgroundImage = 'url(http://127.0.0.1:3000/stories/' + storyId + '/images/' + element + ')';
+    div.appendChild(img);
+    carousel.appendChild(div);
+  }
+
+  viewer.style.display = 'block';
+  // TODO dim outside area + stop scrolling of outside area
+}
+
+function closeStory(story) {
+  if (!isStoryOpen) {
+    return;
+  }
+
+  isStoryOpen = false;
+  document.querySelector('#story-viewer').style.display = 'none';
+}
 
 function reloadStories() {
   ApiClient.loadStories(currentSort, currentSeach).then((stories) => {
@@ -66,9 +116,14 @@ function loadStoryToDOM(json) {
   card.querySelector('.text-body').textContent = json.body + '...';
   card.querySelector('.post-card').setAttribute('story', id);
 
+  const btn = card.querySelector('button');
   const $card = $(card.querySelector('.post-card-wrapper'));
-  const $readMore = $(card.querySelector('button'));
+  const $readMore = $(btn);
 
+  btn.onclick = (e) => {
+    e.cancelBubble = true;
+    openStory(e.target.parentElement.querySelector('.post-card').getAttribute('story'));
+  };
   // jQuery animation for read more (simplest way to implement this seeing as how bootstrap requires jQuery anyways)
   $card.hover(
     () => {

@@ -1,7 +1,35 @@
 extends template.pug
 
 block content
-	.row
+	#story-viewer
+		h1.title Title
+		h3.subtitle Subtitle
+		.author-date-box
+			p.author Author
+			p.date Date
+		hr
+		#viewer-carousel.carousel.slide(data-ride='carousel')
+			ol.carousel-indicators
+				li.active(data-target='#viewer-carousel', data-slide-to='0')
+				li(data-target='#viewer-carousel', data-slide-to='1')
+				li(data-target='#viewer-carousel', data-slide-to='2')
+			.carousel-inner
+				.carousel-item.active
+					img.d-block.w-100(src='', alt='First slide')
+				.carousel-item
+					img.d-block.w-100(src='', alt='Second slide')
+				.carousel-item
+					img.d-block.w-100(src='', alt='Third slide')
+			a.carousel-control-prev(href='#viewer-carousel', role='button', data-slide='prev')
+				span.carousel-control-prev-icon(aria-hidden='true')
+				span.sr-only Previous
+			a.carousel-control-next(href='#viewer-carousel', role='button', data-slide='next')
+				span.carousel-control-next-icon(aria-hidden='true')
+				span.sr-only Next
+
+
+		p.text-body Content
+	.row#outside-area
 		.col-md-3.bg-less-fade
 		.col-lg-6.p-3.h-100
 			.d-flex.flex-row.align-items-center
@@ -25,15 +53,15 @@ append templates
 		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm.flex-column.mb-3
 			.post-card.d-flex.flex-column(story='')
 				.d-flex.flex-column.w-100
-					h2.m-0.title
-					h3.m-0.subtitle
-					.mb-1.mt-2.d-flex
-						p.m-0.mr-2.author
-						p.m-0.ml-2.text-right.flex-fill.date
-				hr.mt-0.w-100
+					h2.title
+					h3.subtitle
+					.author-date-box
+						p.author
+						p.date
+				hr.w-100
 				.d-flex.flex-row
 					img.post-card-img.shadow-sm.rounded.header-image
-					p.mb-0.text-body
+					p.text-body
 			button.read-more-btn.btn.btn-secondary(style='opacity: 0;') Read more...
 
 

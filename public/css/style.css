@@ -2,6 +2,7 @@
   --cl-fade-focus: rgba(234, 236, 238, 0.8);
   --cl-fade: rgba(234, 236, 238, 0.5);
   --cl-less-fade: rgba(234, 236, 238, 0.4);
+  --cl-fade-opaque: rgba(234, 236, 238);
   --cl-head: #ebf5fb;
   --cl-muted: rgba(33, 37, 41, 0.8);
 }
@@ -45,6 +46,63 @@ h3 {
   background-color: var(--cl-less-fade);
 }
 
+.title {
+  margin-bottom: 0.25rem;
+}
+
+.author-date-box {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.5rem;
+}
+
+.date {
+  flex: 1;
+  text-align: right;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+#viewer-carousel {
+  margin-bottom: 1rem;
+}
+
+#viewer-carousel .carousel-item {
+  height: 50vh;
+}
+
+#viewer-carousel .carousel-item * {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+#story-viewer {
+  background-color: var(--cl-fade-opaque);
+  z-index: 10;
+  margin: 1rem 0 1rem 0;
+  width: 95vw;
+  max-width: 850px;
+  border-radius: 0.5rem;
+  padding: 1rem;
+
+  display: none;
+
+  margin: 1rem;
+
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .read-more-btn {
   opacity: 0;
   position: absolute;
@@ -52,7 +110,6 @@ h3 {
 
 #container {
   flex: 1;
-  display: flex;
 }
 
 .row {
