@@ -1,12 +1,21 @@
 /* eslint-disable no-undef */
+const STORY_STEP = 10;
+
 var currentSort = '';
 var currentSeach = null;
 var isStoryOpen = false;
+var storyCounter = 0;
+
+// TODO comment posting events etc.
 
 Node.prototype.empty = function () {
   while (this.firstChild) {
     this.firstChild.remove();
   }
+};
+
+document.querySelector('#load-more-btn').onclick = function () {
+  loadStories(false);
 };
 
 document.querySelectorAll('#sort a').forEach((i) => {
@@ -20,7 +29,7 @@ document.querySelectorAll('#sort a').forEach((i) => {
     b.appendChild(this.children[0].cloneNode());
 
     // Refetch & reload stories
-    reloadStories();
+    loadStories(true);
   };
 });
 
@@ -43,7 +52,7 @@ document.querySelector('.search-field').onkeydown = function (e) {
 document.querySelector('.search-btn').onclick = function () {
   const search = document.querySelector('.search-field').value;
   currentSeach = search === '' ? null : search;
-  reloadStories();
+  loadStories(true);
 };
 
 // Initially load stories on document open by emulating a change in sort mode
@@ -97,7 +106,7 @@ function openStory(storyId) {
   document.querySelector('#comment-content-input').value = '';
   document.querySelector('#comment-user-input').value = '';
 
-  viewer.style.display = 'block';
+  viewer.style.display = 'flex';
   document.querySelector('body').classList.add('modal-open');
 }
 
@@ -114,12 +123,17 @@ function closeStory() {
 }
 
 // Uses the ApiClient to load and then subsequently load the stories to the DOM
-function reloadStories() {
-  ApiClient.loadStories(currentSort, currentSeach).then((stories) => {
+function loadStories(dirty = false) {
+  if (dirty) {
+    storyCounter = 0;
     document.querySelector('#stories').empty();
+  }
+
+  ApiClient.loadStories(currentSort, currentSeach, storyCounter, storyCounter + STORY_STEP).then((stories) => {
     stories.forEach((i) => {
       loadStoryToDOM(i);
     });
+    storyCounter += stories.length;
   });
 }
 

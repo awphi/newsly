@@ -100,22 +100,19 @@ p {
 
 #story-viewer-wrapper {
   display: none;
+  justify-content: center;
   background-color: rgba(0, 0, 0, 0.2);
 }
 
 .story-viewer-box {
   background-color: var(--cl-fade-opaque);
   margin: 1rem 0 1rem 0;
-  width: 95vw;
-  max-width: 850px;
+  width: min(850px, 95vw);
   border-radius: 0.5rem;
   padding: 1rem;
 
   margin: 1rem;
-
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
+  height: fit-content;
 }
 
 .read-more-btn {
@@ -125,6 +122,7 @@ p {
 
 #container {
   flex: 1;
+  display: flex;
 }
 
 .row {
@@ -142,6 +140,12 @@ p {
   max-height: 50vh;
   align-items: center;
   justify-content: center;
+}
+
+#load-more-btn {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .post-card {
