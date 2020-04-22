@@ -84,6 +84,19 @@ function openStory(storyId) {
     carousel.appendChild(div);
   }
 
+  const comments = document.querySelector('#story-viewer-wrapper .comments');
+  json.comments.forEach((i) => {
+    const template = document.getElementById('comment-template');
+    const card = document.importNode(template.content, true);
+    card.querySelector('.date').textContent = new Date(i.date).toUTCString();
+    card.querySelector('.author').textContent = i.author;
+    card.querySelector('.text-body').textContent = i.body;
+    comments.appendChild(card);
+  });
+
+  document.querySelector('#comment-content-input').value = '';
+  document.querySelector('#comment-user-input').value = '';
+
   viewer.style.display = 'block';
   document.querySelector('body').classList.add('modal-open');
 }
@@ -96,6 +109,7 @@ function closeStory() {
 
   isStoryOpen = false;
   document.querySelector('#story-viewer-wrapper').style.display = 'none';
+  document.querySelector('#story-viewer-wrapper .comments').empty();
   document.querySelector('body').classList.remove('modal-open');
 }
 

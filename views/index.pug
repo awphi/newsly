@@ -29,7 +29,17 @@ append body
 					span.sr-only Next
 			p.text-body Content
 			hr
-			h3 Comments
+			.comments
+			.d-flex.flex-row.mt-4.align-items-center
+				.d-flex.flex-column.flex-fill
+					.d-flex.flex-row
+						label.mr-2(for='comment-user-input') User
+						input#comment-user-input.form-control(type='text', placeholder='Anonymous User')
+					.d-flex.flex-row.mt-2
+						label.mr-2(for='comment-content-input') Comment
+						textarea#comment-content-input.form-control
+				button.ml-2.btn.btn-secondary(type='button') Post
+
 
 block content
 	.row
@@ -52,6 +62,12 @@ block content
 		.col-md-3.bg-less-fade
 
 append templates
+	template#comment-template
+		.comment
+			.d-flex.flex-row.mb-1
+				p.author.ml-auto Author
+				p.date Date
+			p.text-body Content
 	template#post-card-template
 		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm.flex-column.mb-3
 			.post-card.d-flex.flex-column(story='')
