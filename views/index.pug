@@ -1,35 +1,38 @@
 extends template.pug
 
+append body
+	#story-viewer-wrapper.modal
+		.story-viewer-box
+			h1.title Title
+			h3.subtitle Subtitle
+			.author-date-box
+				p.author Author
+				p.date Date
+			hr
+			#viewer-carousel.carousel.slide(data-ride='carousel')
+				ol.carousel-indicators
+					li.active(data-target='#viewer-carousel', data-slide-to='0')
+					li(data-target='#viewer-carousel', data-slide-to='1')
+					li(data-target='#viewer-carousel', data-slide-to='2')
+				.carousel-inner
+					.carousel-item.active
+						img.d-block.w-100(src='', alt='First slide')
+					.carousel-item
+						img.d-block.w-100(src='', alt='Second slide')
+					.carousel-item
+						img.d-block.w-100(src='', alt='Third slide')
+				a.carousel-control-prev(href='#viewer-carousel', role='button', data-slide='prev')
+					span.carousel-control-prev-icon(aria-hidden='true')
+					span.sr-only Previous
+				a.carousel-control-next(href='#viewer-carousel', role='button', data-slide='next')
+					span.carousel-control-next-icon(aria-hidden='true')
+					span.sr-only Next
+			p.text-body Content
+			hr
+			h3 Comments
+
 block content
-	#story-viewer
-		h1.title Title
-		h3.subtitle Subtitle
-		.author-date-box
-			p.author Author
-			p.date Date
-		hr
-		#viewer-carousel.carousel.slide(data-ride='carousel')
-			ol.carousel-indicators
-				li.active(data-target='#viewer-carousel', data-slide-to='0')
-				li(data-target='#viewer-carousel', data-slide-to='1')
-				li(data-target='#viewer-carousel', data-slide-to='2')
-			.carousel-inner
-				.carousel-item.active
-					img.d-block.w-100(src='', alt='First slide')
-				.carousel-item
-					img.d-block.w-100(src='', alt='Second slide')
-				.carousel-item
-					img.d-block.w-100(src='', alt='Third slide')
-			a.carousel-control-prev(href='#viewer-carousel', role='button', data-slide='prev')
-				span.carousel-control-prev-icon(aria-hidden='true')
-				span.sr-only Previous
-			a.carousel-control-next(href='#viewer-carousel', role='button', data-slide='next')
-				span.carousel-control-next-icon(aria-hidden='true')
-				span.sr-only Next
-
-
-		p.text-body Content
-	.row#outside-area
+	.row
 		.col-md-3.bg-less-fade
 		.col-lg-6.p-3.h-100
 			.d-flex.flex-row.align-items-center

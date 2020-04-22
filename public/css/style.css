@@ -84,16 +84,25 @@ p {
   background-position: 50% 50%;
 }
 
-#story-viewer {
+#story-viewer-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 200;
+
+  display: none;
+
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.story-viewer-box {
   background-color: var(--cl-fade-opaque);
-  z-index: 10;
   margin: 1rem 0 1rem 0;
   width: 95vw;
   max-width: 850px;
   border-radius: 0.5rem;
   padding: 1rem;
-
-  display: none;
 
   margin: 1rem;
 

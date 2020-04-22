@@ -24,22 +24,32 @@ document.querySelectorAll('#sort a').forEach((i) => {
   };
 });
 
-document.querySelector('#outside-area').onclick = closeStory;
+// Close the story if anywhere outside the story box is clicked
+document.querySelector('#story-viewer-wrapper').onclick = closeStory;
 
+// Stop the click event from bubbling up to the wrapper element
+document.querySelector('.story-viewer-box').onclick = function (e) {
+  e.cancelBubble = true;
+};
+
+// Emulate the search button being pressed on enter
 document.querySelector('.search-field').onkeydown = function (e) {
   if (e.keyCode === 13) {
     document.querySelector('.search-btn').click();
   }
 };
 
+// Reload the stories when the search button is pressed
 document.querySelector('.search-btn').onclick = function () {
   const search = document.querySelector('.search-field').value;
   currentSeach = search === '' ? null : search;
   reloadStories();
 };
 
+// Initially load stories on document open by emulating a change in sort mode
 document.querySelector('#sort a[sort-by=date-descending]').click();
 
+// Function to open a specific story into the viewer using its ID
 function openStory(storyId) {
   if (isStoryOpen) {
     return;
@@ -47,7 +57,7 @@ function openStory(storyId) {
 
   isStoryOpen = true;
 
-  const viewer = document.querySelector('#story-viewer');
+  const viewer = document.querySelector('#story-viewer-wrapper');
   const json = ApiClient.cache[storyId];
 
   viewer.querySelector('.title').textContent = json.title;
@@ -75,18 +85,21 @@ function openStory(storyId) {
   }
 
   viewer.style.display = 'block';
-  // TODO dim outside area + stop scrolling of outside area
+  document.querySelector('body').classList.add('modal-open');
 }
 
-function closeStory(story) {
+// Close the currently viewed story (if open)
+function closeStory() {
   if (!isStoryOpen) {
     return;
   }
 
   isStoryOpen = false;
-  document.querySelector('#story-viewer').style.display = 'none';
+  document.querySelector('#story-viewer-wrapper').style.display = 'none';
+  document.querySelector('body').classList.remove('modal-open');
 }
 
+// Uses the ApiClient to load and then subsequently load the stories to the DOM
 function reloadStories() {
   ApiClient.loadStories(currentSort, currentSeach).then((stories) => {
     document.querySelector('#stories').empty();
@@ -96,6 +109,7 @@ function reloadStories() {
   });
 }
 
+// Loads a story to the DOM using the story-box template and the cached JSON data from the server
 function loadStoryToDOM(json) {
   const id = json._id;
 
