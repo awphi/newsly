@@ -104,8 +104,20 @@ components:
         - models
         - stories
       description: Representation of a story.
+      x-examples:
+        example-1:
+          title: HEADLINE
+          subtitle: SUBTITLE
+          author: Genghis Khan
+          date: 1583430030752
+          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
+          _imageIds:
+            - header
+            - bonus
+            - bonus1
+          _views: 12
       properties:
-        id:
+        _id:
           type: string
         comments:
           type: array
@@ -121,9 +133,9 @@ components:
           type: string
         date:
           type: integer
-        _views:
+        views:
           type: integer
-        _imageIds:
+        images:
           type: array
           items:
             type: string
@@ -132,18 +144,6 @@ components:
         - title
         - subtitle
         - body
-      x-examples:
-        example-1:
-          title: HEADLINE
-          subtitle: SUBTITLE
-          author: Genghis Khan
-          date: 1583430030752
-          body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          _imageIds:
-            - header
-            - bonus
-            - bonus1
-          _views: 12
     comment:
       title: comment
       type: object
