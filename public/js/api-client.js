@@ -30,7 +30,7 @@ const ApiClient = {
         }
       });
 
-      return Promise.all(promises).catch((e) => console.error(e));
+      return Promise.all(promises);
     });
   },
   listStories: function (sort, search) {
@@ -39,10 +39,6 @@ const ApiClient = {
       query += `&search=${search}`;
     }
 
-    return fetch(query)
-      .then((response) => response.json())
-      .catch((err) => {
-        console.error(err);
-      });
+    return fetch(query).then((response) => response.json());
   }
 };

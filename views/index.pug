@@ -1,7 +1,7 @@
 extends template.pug
 
 append body
-	#story-viewer-wrapper.modal
+	#story-viewer-wrapper.modal(style='display: none;')
 		.story-viewer-box
 			h1.title Title
 			h3.subtitle Subtitle
@@ -59,6 +59,8 @@ block content
 							i.far.fa-thumbs-up.ml-2
 			hr
 			#stories
+			#stories-spinner.spinner(style='display: none;')
+			h3#no-more-stories.text-center(style='display: none;') End of results.
 			button#load-more-btn.btn.btn-secondary(type='button') Load More...
 		.col-md-3.bg-less-fade
 

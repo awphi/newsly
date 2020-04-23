@@ -106,7 +106,7 @@ function openStory(storyId) {
   document.querySelector('#comment-content-input').value = '';
   document.querySelector('#comment-user-input').value = '';
 
-  viewer.style.display = 'flex';
+  viewer.style.display = null;
   document.querySelector('body').classList.add('modal-open');
 }
 
@@ -124,17 +124,31 @@ function closeStory() {
 
 // Uses the ApiClient to load and then subsequently load the stories to the DOM
 function loadStories(dirty = false) {
+  document.querySelector('#stories-spinner').style.display = null;
+  document.querySelector('#load-more-btn').style.display = 'none';
+  document.querySelector('#no-more-stories').style.display = 'none';
+
   if (dirty) {
     storyCounter = 0;
     document.querySelector('#stories').empty();
   }
 
-  ApiClient.loadStories(currentSort, currentSeach, storyCounter, storyCounter + STORY_STEP).then((stories) => {
-    stories.forEach((i) => {
-      loadStoryToDOM(i);
-    });
-    storyCounter += stories.length;
-  });
+  ApiClient.loadStories(currentSort, currentSeach, storyCounter, storyCounter + STORY_STEP)
+    .then((stories) => {
+      if (stories.length === 0) {
+        document.querySelector('#load-more-btn').style.display = 'none';
+        document.querySelector('#stories-spinner').style.display = 'none';
+        document.querySelector('#no-more-stories').style.display = null;
+      } else {
+        document.querySelector('#stories-spinner').style.display = 'none';
+        document.querySelector('#load-more-btn').style.display = null;
+        stories.forEach((i) => {
+          loadStoryToDOM(i);
+        });
+        storyCounter += stories.length;
+      }
+    })
+    .catch((e) => console.error(e));
 }
 
 // Loads a story to the DOM using the story-box template and the cached JSON data from the server
