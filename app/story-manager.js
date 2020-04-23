@@ -46,21 +46,13 @@ storyManager.saveAll = function () {
   return Promise.all(promises);
 };
 
-storyManager.getSortFromString = function (st) {
-  if (st in storyManager.sorts) {
-    return storyManager.sorts[st];
-  }
-
-  return null;
-};
-
 storyManager.keys = function () {
   return Object.keys(storyManager.stories);
 };
 
-storyManager.listStories = function (sort, search = null) {
+storyManager.listStories = function (sortMode, search = null) {
   // Performance could be obviously improved with caching but out of the scope for this project
-  const keys = storyManager.keys().sort(storyManager.sorts[sort]);
+  const keys = storyManager.keys().sort(storyManager.sorts[sortMode]);
 
   if (search === null) {
     return keys;

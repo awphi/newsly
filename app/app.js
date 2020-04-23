@@ -3,13 +3,7 @@ const app = express();
 const storyManager = require('./story-manager');
 const Comment = require('./comment');
 
-// Body Parser
 app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: false
-  })
-);
 
 // Handle CORS
 app.all('*', function (req, res, next) {
@@ -19,14 +13,14 @@ app.all('*', function (req, res, next) {
 });
 
 app.get('/stories-list', (req, res) => {
-  const sort = 'sort' in req.query ? storyManager.getSortFromString(String(req.query.sort)) : 'date-descending';
+  const sort = 'sort' in req.query ? String(req.query.sort) : 'date-descending';
   const search = 'search' in req.query && req.query.search.length >= 3 ? String(req.query.search) : null;
 
-  if (sort === null) {
+  if (!(sort in storyManager.sorts)) {
     return res.sendStatus(400);
   }
 
-  return res.status(200).json(storyManager.listStories(req.params.sort, search));
+  return res.status(200).json(storyManager.listStories(sort, search));
 });
 
 app.get('/stories/:storyId', function (req, res) {
@@ -61,15 +55,15 @@ app.get('/stories/:storyId/images/:imageId', function (req, res) {
 });
 
 app.post('/stories/:storyId/comment', function (req, res) {
-  const user = req.body.author;
-  const body = req.body.body;
+  const author = req.body.author;
+  const body = req.body.content;
   const story = req.params.storyId;
 
-  if (!user || !body || !(story in storyManager.stories)) {
+  if (!author || !body || !(story in storyManager.stories)) {
     return res.sendStatus(400);
   }
 
-  storyManager.stories[story].addComment(new Comment(user, Date.now(), body));
+  storyManager.stories[story].addComment(new Comment(author, Date.now(), body));
   return res.sendStatus(200);
 });
 
