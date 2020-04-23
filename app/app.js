@@ -56,7 +56,7 @@ app.get('/stories/:storyId/images/:imageId', function (req, res) {
 
 app.post('/stories/:storyId/comment', function (req, res) {
   const author = req.body.author;
-  const body = req.body.content;
+  const body = req.body.body;
   const story = req.params.storyId;
 
   if (!author || !body || !(story in storyManager.stories)) {
@@ -65,10 +65,6 @@ app.post('/stories/:storyId/comment', function (req, res) {
 
   storyManager.stories[story].addComment(new Comment(author, Date.now(), body));
   return res.sendStatus(200);
-});
-
-app.post('/post', function (req, res) {
-  return res.send(req.body.name);
 });
 
 module.exports = app;

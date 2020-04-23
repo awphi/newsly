@@ -2,75 +2,13 @@
 const app = require('../app');
 const request = require('supertest');
 const stories = require('../story-manager');
-const mock = require('mock-fs');
-const fs = require('fs');
 
-const testData = {
-  data: {
-    test_story_1: {
-      'post.json': JSON.stringify({
-        title: 'Test Story 1 CATDOG',
-        views: 13,
-        subtitle: 'Irrelevant subtitle here.',
-        author: 'John Doe',
-        date: 1583430030752,
-        comments: [{ author: 'Julio Marucci', date: 1583430279222, content: 'Refried beans!' }],
-        body:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        images: ['image1', 'image2']
-      }),
-      'image1.png': Buffer.from([0xdeadbeef]),
-      'image2.png': Buffer.from([0])
-    },
-    test_story_2: {
-      'post.json': JSON.stringify({
-        title: 'Test Story 2',
-        views: 2,
-        subtitle: 'Irrelevant subtitle here.',
-        author: 'John Doe',
-        comments: [{ author: 'Julio Marucci', date: 1583430279222, content: 'Refried beans!' }],
-        date: 1580430030752,
-        body:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        images: ['image']
-      }),
-      'image.png': Buffer.from([0])
-    },
-    test_story_3: {
-      'post.json': JSON.stringify({
-        title: 'Test Story 3',
-        views: 14,
-        subtitle: 'Irrelevant subtitle here.',
-        comments: [{ author: 'Julio Marucci', date: 1583430279222, content: 'Refried beans!' }],
-        author: 'John Doe',
-        date: 1283430030752,
-        body:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        images: ['header']
-      }),
-      'header.png': Buffer.from([0])
-    }
-  }
-};
+// eslint-disable-next-line no-unused-vars
+const fs = require('fs');
+jest.mock('fs');
 
 beforeAll(() => {
-  mock(testData);
   return stories.loadAll();
-});
-
-beforeEach(() => {
-  mock(testData);
-});
-
-afterEach(() => {
-  mock.restore();
-});
-
-describe('Test tests', () => {
-  it('reading data/test_story_1/image1.png gives 0xDEADBEEF (testing mocked fs)', () => {
-    const file = fs.readFileSync('data/test_story_1/image1.png');
-    expect(file).toEqual(Buffer.from([0xdeadbeef]));
-  });
 });
 
 describe('GET endpoints', () => {
@@ -105,11 +43,11 @@ describe('GET endpoints', () => {
 });
 
 describe('POST endpoints', () => {
-  it('post Adam to /post test', (done) => {
-    request(app).post('/post').send({ name: 'Adam' }).expect('Adam', done);
+  it('/stories/test_story_1/comment with no username in body returns 400', (done) => {
+    request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: undefined }).expect(400, done);
   });
 
-  it('post Daniel to /post test', (done) => {
-    request(app).post('/post').send({ name: 'Daniel' }).expect('Daniel', done);
+  it('/stories/test_story_1/comment with username and body in body returns 200', (done) => {
+    request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: 'Author' }).expect(200, done);
   });
 });
