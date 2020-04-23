@@ -75,7 +75,7 @@ module.exports = class Story {
         return promiseFs.promiseWriteFile(path.join('data', this._id, 'post.json'), JSON.stringify(this.generateWritable()));
       })
       .catch((err) => {
-        console.error(`Error encountered when writing story: ${err}`);
+        process.stdout.write(`Error encountered when writing story: ${err} \n`);
       });
   }
 

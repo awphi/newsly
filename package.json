@@ -6,17 +6,17 @@
     "start": "node app/server.js",
     "pretest": "eslint --fix public/js/**/*.js app/**/*.js",
     "test": "jest",
-    "dev": "concurrently \"pug --watch ./views --out ./public\" \"nodemon app/server.js\"",
-    "build": "pug ./views --out ./public --pretty"
+    "dev:client": "pug --watch ./views --out ./public",
+    "build:client": "pug ./views --out ./public --pretty"
   },
   "author": "awphi",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^25.2.7",
+    "mock-fs": "^4.11.0",
     "nodemon": "^2.0.2",
     "prettier": "^2.0.2",
     "pug-cli": "^1.0.0-alpha6",
@@ -24,8 +24,6 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
-    "@godaddy/terminus": "^4.3.1",
-    "express": "^4.17.1",
-    "mock-fs": "^4.11.0"
+    "express": "^4.17.1"
   }
 }

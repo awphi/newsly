@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const storyManager = require('./story-manager');
+const Comment = require('./comment');
 
 // Body Parser
 app.use(express.json());
@@ -41,6 +42,11 @@ app.get('/stories/:storyId', function (req, res) {
 
 app.get('/stories/:storyId/images/:imageId', function (req, res) {
   const story = req.params.storyId;
+
+  if (!(story in storyManager.stories)) {
+    return res.sendStatus(400);
+  }
+
   const imgId = req.params.imageId;
   const img = storyManager.stories[story].getImage(imgId);
 
@@ -52,6 +58,19 @@ app.get('/stories/:storyId/images/:imageId', function (req, res) {
     .set({ 'Content-Type': 'image/png' })
     .status(200)
     .sendFile(process.cwd() + '/' + img);
+});
+
+app.post('/stories/:storyId/comment', function (req, res) {
+  const user = req.body.author;
+  const body = req.body.body;
+  const story = req.params.storyId;
+
+  if (!user || !body || !(story in storyManager.stories)) {
+    return res.sendStatus(400);
+  }
+
+  storyManager.stories[story].addComment(new Comment(user, Date.now(), body));
+  return res.sendStatus(200);
 });
 
 module.exports = app;
