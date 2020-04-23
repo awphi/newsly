@@ -103,3 +103,13 @@ describe('GET endpoints', () => {
       .expect(200, done);
   });
 });
+
+describe('POST endpoints', () => {
+  it('post Adam to /post test', (done) => {
+    request(app).post('/post').send({ name: 'Adam' }).expect('Adam', done);
+  });
+
+  it('post Daniel to /post test', (done) => {
+    request(app).post('/post').send({ name: 'Daniel' }).expect('Daniel', done);
+  });
+});

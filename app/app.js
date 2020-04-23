@@ -67,4 +67,8 @@ app.post('/stories/:storyId/comment', function (req, res) {
   return res.sendStatus(200);
 });
 
+app.post('/post', function (req, res) {
+  return res.send(req.body.name);
+});
+
 module.exports = app;
