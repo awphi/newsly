@@ -95,6 +95,30 @@ paths:
                 description: Bad Request
       operationId: get-stories-storyId
       description: 'Retrieve the data on a given story from its ID. IDs are usually obtained with the [stories-list endpoint](get-stories-list-sort).'
+  '/stories/{storyId}/comment':
+    parameters:
+      - schema:
+          type: string
+        name: storyId
+        in: path
+        required: true
+    post:
+      summary: Post a comment on a given story
+      operationId: post-stories-storyId-comment
+      description: Post a comment to a story of a given ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      tags:
+        - comments
+        - stories
 components:
   schemas:
     story:
