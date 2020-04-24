@@ -7,16 +7,22 @@ const stories = require('../story-manager');
 const fs = require('fs');
 jest.mock('fs');
 
-beforeAll(() => {
-  return stories.loadAll();
-});
+beforeAll(stories.loadAll);
 
 describe('GET endpoints', () => {
-  it('/stories/test_story_1/images/image1 returns PNG 200 (OK)', (done) => {
+  it('getting test_story_1 returns 200 with the correct story', (done) => {
+    request(app)
+      .get('/stories/test_story_1')
+      .expect('Content-type', 'application/json; charset=utf-8')
+      .expect((res) => expect(res.body._id).toEqual('test_story_1'))
+      .expect(200, done);
+  });
+
+  it('getting story image returns 200 w/ a PNG image', (done) => {
     request(app).get('/stories/test_story_1/images/image1').expect('Content-Type', 'image/png').expect(200, done);
   });
 
-  it('/stories-list returns JSON list', (done) => {
+  it('lisitng stories returns JSON list', (done) => {
     request(app)
       .get('/stories-list')
       .expect('Content-type', 'application/json; charset=utf-8')
@@ -24,7 +30,7 @@ describe('GET endpoints', () => {
       .expect(200, done);
   });
 
-  it('/stories-list?search=CATDOG returns test_story_1 only', (done) => {
+  it('listing stories with search=CATDOG returns test_story_1 only', (done) => {
     request(app)
       .get('/stories-list?search=CATDOG')
       .expect('Content-type', 'application/json; charset=utf-8')
@@ -33,7 +39,7 @@ describe('GET endpoints', () => {
       .expect(200, done);
   });
 
-  it('/stories-list?sort=popularity-descending returns test stories 3, 1 then 2', (done) => {
+  it('listing stories with sort=popularity-descending returns 200 w/ stories in correct order', (done) => {
     request(app)
       .get('/stories-list?sort=popularity-descending')
       .expect('Content-type', 'application/json; charset=utf-8')
@@ -43,11 +49,11 @@ describe('GET endpoints', () => {
 });
 
 describe('POST endpoints', () => {
-  it('/stories/test_story_1/comment with no username in body returns 400', (done) => {
+  it('invalid comment returns 400', (done) => {
     request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: undefined }).expect(400, done);
   });
 
-  it('/stories/test_story_1/comment with username and body in body returns 200', (done) => {
+  it('valid comment returns 200', (done) => {
     request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: 'Author' }).expect(200, done);
   });
 });
