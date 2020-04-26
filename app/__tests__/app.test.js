@@ -49,8 +49,19 @@ describe('GET endpoints', () => {
 });
 
 describe('POST endpoints', () => {
-  it('invalid comment returns 400', (done) => {
-    request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: undefined }).expect(400, done);
+  it('invalid comment (no author) returns 400', (done) => {
+    request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: '' }).expect(400, done);
+  });
+
+  it('invalid comment (body too long (>240 chars)) returns 400', (done) => {
+    request(app)
+      .post('/stories/test_story_1/comment')
+      .send({
+        body:
+          'BodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBody',
+        author: 'Author'
+      })
+      .expect(200, done);
   });
 
   it('valid comment returns 200', (done) => {

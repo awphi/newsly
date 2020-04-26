@@ -50,8 +50,8 @@ app.get('/stories/:storyId/images/:imageId', function (req, res) {
 });
 
 app.post('/stories/:storyId/comment', function (req, res) {
-  var author = String(req.body.author);
-  var body = String(req.body.body);
+  var author = req.body.author ? String(req.body.author) : '';
+  var body = req.body.body ? String(req.body.body) : '';
   const story = req.params.storyId;
 
   // Author length: min 1, max 40 (chars)
