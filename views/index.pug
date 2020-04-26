@@ -34,11 +34,11 @@ append body
 				.d-flex.flex-column.flex-fill
 					.d-flex.flex-row
 						label.mr-2(for='comment-user-input') User
-						input#comment-user-input.form-control(type='text', placeholder='Anonymous User')
+						input#comment-user-input.form-control(type='text', maxlength='40', placeholder='Anonymous User')
 					.d-flex.flex-row.mt-2
 						label.mr-2(for='comment-content-input') Comment
-						textarea#comment-content-input.form-control
-				button.ml-2.btn.btn-secondary(type='button') Post
+						textarea(maxlength='240')#comment-content-input.form-control
+				button#comment-btn.ml-2.btn.btn-secondary(type='button') Post
 
 
 block content

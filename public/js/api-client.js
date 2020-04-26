@@ -6,9 +6,19 @@ const ApiClient = {
   loaded: function () {
     return Object.keys(this.cache).filter((a) => this.cache[a] !== undefined);
   },
+  commentOnStory: function (id, comment) {
+    console.log(`Commenting on story: ${id}`, comment);
+    return fetch(`http://127.0.0.1:3000/stories/${id}/comment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(comment)
+    });
+  },
   loadStory: function (id) {
     console.log(`Requesting story: ${id}`);
-    return fetch('http://127.0.0.1:3000/stories/' + id)
+    return fetch(`http://127.0.0.1:3000/stories/${id}`)
       .then((response) => response.json())
       .then((json) => {
         this.cache[id] = json;

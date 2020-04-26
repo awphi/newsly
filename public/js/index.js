@@ -3,7 +3,7 @@ const STORY_STEP = 10;
 
 var currentSort = '';
 var currentSeach = null;
-var isStoryOpen = false;
+var storyOpen = null;
 var storyCounter = 0;
 
 // TODO comment posting events etc.
@@ -12,6 +12,21 @@ Node.prototype.empty = function () {
   while (this.firstChild) {
     this.firstChild.remove();
   }
+};
+
+document.querySelector('#comment-btn').onclick = function () {
+  const comment = {
+    author: document.querySelector('#comment-user-input').value,
+    body: document.querySelector('#comment-content-input').value
+  };
+
+  ApiClient.commentOnStory(storyOpen, comment).then((res) => {
+    if (res.ok) {
+      res.json().then((json) => {
+        loadCommentToDOMViewer(json);
+      });
+    }
+  });
 };
 
 document.querySelector('#load-more-btn').onclick = function () {
@@ -58,13 +73,18 @@ document.querySelector('.search-btn').onclick = function () {
 // Initially load stories on document open by emulating a change in sort mode
 document.querySelector('#sort a[sort-by=date-descending]').click();
 
+function clearCommentFields() {
+  document.querySelector('#comment-content-input').value = '';
+  document.querySelector('#comment-user-input').value = '';
+}
+
 // Function to open a specific story into the viewer using its ID
 function openStory(storyId) {
-  if (isStoryOpen) {
+  if (storyOpen !== null) {
     return;
   }
 
-  isStoryOpen = true;
+  storyOpen = storyId;
 
   const viewer = document.querySelector('#story-viewer-wrapper');
   const json = ApiClient.cache[storyId];
@@ -93,30 +113,29 @@ function openStory(storyId) {
     carousel.appendChild(div);
   }
 
-  const comments = document.querySelector('#story-viewer-wrapper .comments');
-  json.comments.forEach((i) => {
-    const template = document.getElementById('comment-template');
-    const card = document.importNode(template.content, true);
-    card.querySelector('.date').textContent = new Date(i.date).toUTCString();
-    card.querySelector('.author').textContent = i.author;
-    card.querySelector('.text-body').textContent = i.body;
-    comments.appendChild(card);
-  });
+  json.comments.forEach((i) => loadCommentToDOMViewer(i));
 
-  document.querySelector('#comment-content-input').value = '';
-  document.querySelector('#comment-user-input').value = '';
-
+  clearCommentFields();
   viewer.style.display = null;
   document.querySelector('body').classList.add('modal-open');
 }
 
+function loadCommentToDOMViewer(comment) {
+  const template = document.getElementById('comment-template');
+  const card = document.importNode(template.content, true);
+  card.querySelector('.date').textContent = new Date(comment.date).toUTCString();
+  card.querySelector('.author').textContent = comment.author;
+  card.querySelector('.text-body').textContent = comment.body;
+  document.querySelector('#story-viewer-wrapper .comments').appendChild(card);
+}
+
 // Close the currently viewed story (if open)
 function closeStory() {
-  if (!isStoryOpen) {
+  if (storyOpen === null) {
     return;
   }
 
-  isStoryOpen = false;
+  storyOpen = null;
   document.querySelector('#story-viewer-wrapper').style.display = 'none';
   document.querySelector('#story-viewer-wrapper .comments').empty();
   document.querySelector('body').classList.remove('modal-open');

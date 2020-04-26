@@ -2,15 +2,10 @@ const express = require('express');
 const app = express();
 const storyManager = require('./story-manager');
 const Comment = require('./comment');
+const cors = require('cors');
 
 app.use(express.json());
-
-// Handle CORS
-app.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-  next();
-});
+app.use(cors());
 
 app.get('/stories-list', (req, res) => {
   const sort = 'sort' in req.query ? String(req.query.sort) : 'date-descending';
@@ -55,16 +50,27 @@ app.get('/stories/:storyId/images/:imageId', function (req, res) {
 });
 
 app.post('/stories/:storyId/comment', function (req, res) {
-  const author = req.body.author;
-  const body = req.body.body;
+  var author = String(req.body.author);
+  var body = String(req.body.body);
   const story = req.params.storyId;
 
-  if (!author || !body || !(story in storyManager.stories)) {
+  // Author length: min 1, max 40 (chars)
+  if (author.length <= 0 || author.length > 40) {
+    return res.status(400).send('Invalid author length!');
+  }
+
+  // Body length: min 1, max 240 (chars)
+  if (body.length <= 0 || body.length > 240) {
+    return res.status(400).send('Invalid comment length!');
+  }
+
+  if (!(story in storyManager.stories)) {
     return res.sendStatus(400);
   }
 
-  storyManager.stories[story].addComment(new Comment(author, Date.now(), body));
-  return res.sendStatus(200);
+  const cmt = new Comment(author, Date.now(), body);
+  storyManager.stories[story].addComment(cmt);
+  return res.status(200).json(cmt);
 });
 
 module.exports = app;
