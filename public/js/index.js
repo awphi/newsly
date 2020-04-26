@@ -197,7 +197,9 @@ function loadStoryToDOM(json) {
 
   btn.onclick = (e) => {
     e.cancelBubble = true;
-    openStory(e.target.parentElement.querySelector('.post-card').getAttribute('story'));
+    const id = e.target.parentElement.querySelector('.post-card').getAttribute('story');
+    // Refreshes the story from the server first, then opens it up
+    ApiClient.loadStory(id).then(() => openStory(id));
   };
   // jQuery animation for read more (simplest way to implement this seeing as how bootstrap requires jQuery anyways)
   $card.hover(
