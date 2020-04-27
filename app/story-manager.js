@@ -16,34 +16,21 @@ const storyManager = {
 
 storyManager.addStory = function (id) {
   storyManager.stories[id] = new Story(id);
-  return storyManager.stories[id].load().catch((e) => console.error(e));
+  return storyManager.stories[id].load();
 };
 
 storyManager.loadAll = function () {
   return promiseFs
     .promiseDirectoryContents(path.join('data'))
-    .then((files) => {
-      const promises = [];
-
-      files.forEach((i) => {
-        promises.push(storyManager.addStory(i));
-      });
-
-      return Promise.all(promises);
-    })
+    .then((files) => Promise.all(files.map((i) => storyManager.addStory(i))))
     .catch((err) => {
       console.error(err);
     });
 };
 
 storyManager.saveAll = function () {
-  const promises = [];
-
-  storyManager.keys().forEach((i) => {
-    promises.push(storyManager.stories[i].save());
-  });
-
-  return Promise.all(promises);
+  // Save all stories and return a composite promise
+  return Promise.all(storyManager.keys().map((i) => storyManager.stories[i].save()));
 };
 
 storyManager.keys = function () {

@@ -20,13 +20,16 @@ document.querySelector('#comment-btn').onclick = function () {
     body: document.querySelector('#comment-content-input').value
   };
 
-  ApiClient.commentOnStory(storyOpen, comment).then((res) => {
-    if (res.ok) {
-      res.json().then((json) => {
-        loadCommentToDOMViewer(json);
-      });
-    }
-  });
+  ApiClient.commentOnStory(storyOpen, comment)
+    .then((res) => {
+      if (res.ok) {
+        res.json().then((json) => {
+          clearCommentFields();
+          loadCommentToDOMViewer(json);
+        });
+      }
+    })
+    .catch((e) => console.error(e));
 };
 
 document.querySelector('#load-more-btn').onclick = function () {
@@ -201,6 +204,7 @@ function loadStoryToDOM(json) {
     // Refreshes the story from the server first, then opens it up
     ApiClient.loadStory(id).then(() => openStory(id));
   };
+
   // jQuery animation for read more (simplest way to implement this seeing as how bootstrap requires jQuery anyways)
   $card.hover(
     () => {
