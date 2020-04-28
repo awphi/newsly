@@ -4,17 +4,15 @@
   "description": "Server module for programming summative.",
   "scripts": {
     "start": "node app/server.js",
-    "pretest": "eslint --fix public/js/**/*.js app/**/*.js",
+    "pretest": "eslint public/js/**/*.js app/**/*.js",
     "test": "jest",
     "dev:client": "pug --watch ./views --out ./public",
     "dev:server": "nodemon --signal SIGTERM app/server.js",
-    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "build:client": "pug ./views --out ./public --pretty"
   },
   "author": "awphi",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^5.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
