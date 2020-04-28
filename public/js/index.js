@@ -6,15 +6,13 @@ var currentSeach = null;
 var storyOpen = null;
 var storyCounter = 0;
 
-// TODO comment posting events etc.
-
 Node.prototype.empty = function () {
   while (this.firstChild) {
     this.firstChild.remove();
   }
 };
 
-document.querySelector('#comment-btn').onclick = function () {
+document.querySelector('#comment-btn').addEventListener('click', function () {
   const comment = {
     author: document.querySelector('#comment-user-input').value,
     body: document.querySelector('#comment-content-input').value
@@ -30,14 +28,14 @@ document.querySelector('#comment-btn').onclick = function () {
       }
     })
     .catch((e) => console.error(e));
-};
+});
 
-document.querySelector('#load-more-btn').onclick = function () {
+document.querySelector('#load-more-btn').addEventListener('click', function () {
   loadStories(false);
-};
+});
 
 document.querySelectorAll('#sort a').forEach((i) => {
-  i.onclick = function () {
+  i.addEventListener('click', function () {
     currentSort = this.getAttribute('sort-by');
 
     const b = document.querySelector('#sort button');
@@ -48,30 +46,30 @@ document.querySelectorAll('#sort a').forEach((i) => {
 
     // Refetch & reload stories
     loadStories(true);
-  };
+  });
 });
 
 // Close the story if anywhere outside the story box is clicked
-document.querySelector('#story-viewer-wrapper').onclick = closeStory;
+document.querySelector('#story-viewer-wrapper').addEventListener('click', closeStory);
 
 // Stop the click event from bubbling up to the wrapper element
-document.querySelector('.story-viewer-box').onclick = function (e) {
+document.querySelector('.story-viewer-box').addEventListener('click', (e) => {
   e.cancelBubble = true;
-};
+});
 
 // Emulate the search button being pressed on enter
-document.querySelector('.search-field').onkeydown = function (e) {
+document.querySelector('.search-field').addEventListener('keydown', function (e) {
   if (e.keyCode === 13) {
     document.querySelector('.search-btn').click();
   }
-};
+});
 
 // Reload the stories when the search button is pressed
-document.querySelector('.search-btn').onclick = function () {
+document.querySelector('.search-btn').addEventListener('click', function () {
   const search = document.querySelector('.search-field').value;
   currentSeach = search === '' ? null : search;
   loadStories(true);
-};
+});
 
 // Initially load stories on document open by emulating a change in sort mode
 document.querySelector('#sort a[sort-by=date-descending]').click();
@@ -198,12 +196,12 @@ function loadStoryToDOM(json) {
   const $card = $(card.querySelector('.post-card-wrapper'));
   const $readMore = $(btn);
 
-  btn.onclick = (e) => {
+  btn.addEventListener('click', (e) => {
     e.cancelBubble = true;
     const id = e.target.parentElement.querySelector('.post-card').getAttribute('story');
     // Refreshes the story from the server first, then opens it up
     ApiClient.loadStory(id).then(() => openStory(id));
-  };
+  });
 
   // jQuery animation for read more (simplest way to implement this seeing as how bootstrap requires jQuery anyways)
   $card.hover(

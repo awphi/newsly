@@ -14,15 +14,15 @@ const storyManager = {
   }
 };
 
-storyManager.addStory = function (id) {
-  storyManager.stories[id] = new Story(id);
+storyManager.loadStory = function (id, story = new Story(id)) {
+  storyManager.stories[id] = story;
   return storyManager.stories[id].load();
 };
 
 storyManager.loadAll = function () {
   return promiseFs
     .promiseDirectoryContents(path.join('data'))
-    .then((files) => Promise.all(files.map((i) => storyManager.addStory(i))))
+    .then((files) => Promise.all(files.map((i) => storyManager.loadStory(i))))
     .catch((err) => {
       console.error(err);
     });

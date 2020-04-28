@@ -105,6 +105,10 @@ p {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
+#submitArticleForm .row {
+  margin-bottom: 1rem;
+}
+
 .story-viewer-box {
   background-color: var(--cl-fade-opaque);
   margin: 1rem 0 1rem 0;
@@ -177,5 +181,6 @@ p {
 
 hr {
   border: 0;
+  width: 100%;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }

@@ -6,6 +6,13 @@ module.exports = class Story {
   constructor(id) {
     this._id = id;
     this.comments = [];
+    this.images = [];
+    this.views = 0;
+    this.date = Date.now();
+  }
+
+  getPath() {
+    return path.join('data', this._id);
   }
 
   getImage(id) {

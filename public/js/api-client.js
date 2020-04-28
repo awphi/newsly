@@ -16,6 +16,13 @@ const ApiClient = {
       body: JSON.stringify(comment)
     });
   },
+  submitArticle: function (article) {
+    console.log(`Submitting new article:`, article);
+    return fetch(`http://127.0.0.1:3000/submit-story`, {
+      method: 'POST',
+      body: article
+    });
+  },
   loadStory: function (id) {
     console.log(`Requesting story: ${id}`);
     return fetch(`http://127.0.0.1:3000/stories/${id}`)

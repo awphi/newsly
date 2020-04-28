@@ -1,10 +1,25 @@
+// eslint-disable-next-line no-undef
+const { v4 } = require('uuid');
+const uuidv4 = v4;
+const promiseFs = require('./promise-fs');
+
 const express = require('express');
 const app = express();
-const storyManager = require('./story-manager');
-const Comment = require('./comment');
+
 const cors = require('cors');
 
+const multer = require('multer');
+const upload = multer({
+  storage: multer.memoryStorage()
+});
+
+const storyManager = require('./story-manager');
+const Comment = require('./comment');
+const Story = require('./story');
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use(cors());
 
 app.get('/stories-list', (req, res) => {
@@ -71,6 +86,44 @@ app.post('/stories/:storyId/comment', function (req, res) {
   const cmt = new Comment(author, Date.now(), body);
   storyManager.stories[story].addComment(cmt);
   return res.status(200).json(cmt);
+});
+
+app.post('/submit-story', upload.array('images', 10), function (req, res) {
+  for (let i = 0; i < req.files; i++) {
+    const format = req.files[i].mimetype;
+    if (format.match('image/.*')[0].length !== format.length) {
+      return res.status(400).json({ error: 'Invalid image format!' });
+    }
+  }
+
+  const storyId = uuidv4();
+  const story = new Story(storyId);
+  story.author = req.body.author;
+  story.body = req.body.body;
+  story.title = req.body.title;
+  story.subtitle = req.body.subtitle;
+
+  storyManager.stories[storyId] = story;
+
+  promiseFs
+    .promiseMkdir(story.getPath())
+    .then(() =>
+      Promise.all(
+        req.files.map((file) => {
+          const uid = uuidv4();
+          story.images.push(uid);
+          return promiseFs.promiseWriteFile(story.getImage(uid), file.buffer);
+        })
+      )
+    )
+    .then(() => {
+      req.files = null;
+      res.sendStatus(200);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ error: e });
+    });
 });
 
 module.exports = app;

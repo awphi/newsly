@@ -1,1 +1,38 @@
 extends template.pug
+
+block content
+	.row
+		.col-md-2.bg-less-fade
+		.col-lg-8.p-3.h-100
+			h1.mr-auto.mb-0 New Article
+			hr
+			form#submitArticleForm
+				.row
+					.col
+						label(for="titleInput") Title
+						input#titleInput.form-control(name="title" type="text" placeholder="Title" required)
+					.col
+						label(for="subtitleInput") Subtitle
+						input#subtitleInput.form-control(name="subtitle" type="text" placeholder="Subtitle" required)
+				.row
+					.col
+						label(for="authorInput") Author
+						input#authorInput.form-control(name="author" type="text" placeholder="Author" required)
+
+				.row
+					.col
+						label(for="bodyInput") Post Content
+						textarea#bodyInput.form-control(name="body" cols="30" rows="10" required)
+				.row
+					.col
+						.custom-file
+							label.custom-file-label(for="imagesInput") Image(s)
+							input#imagesInput.custom-file-input(name="images" type="file" accept="image/x-png,image/jpeg" multiple required)
+				.row
+					.col.d-flex.justify-content-center
+						button.btn.btn-primary#submitArticleBtn(type="button") Submit Article
+			
+		.col-md-2.bg-less-fade
+
+append scripts
+	script(src='js/submit.js')
