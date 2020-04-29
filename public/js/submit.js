@@ -33,14 +33,24 @@ document.querySelector('#submitArticleBtn').addEventListener('click', function (
     }
   }
 
+  document.querySelector('#post-spinner').style.display = null;
+  document.querySelector('#post-success').style.display = 'none';
+  document.querySelector('#post-fail').style.display = 'none';
+  document.querySelector('#submitArticleForm').style.display = 'none';
   ApiClient.submitArticle(data)
     .then((res) => {
-      console.log(res);
+      document.querySelector('#post-spinner').style.display = 'none';
       if (res.ok) {
-        window.location = window.location.origin;
+        document.querySelector('#post-success').style.display = null;
       } else {
-        // Show some invalid message
+        document.querySelector('#post-fail').style.display = null;
+        document.querySelector('#submitArticleForm').style.display = null;
       }
     })
-    .catch((e) => console.error(e));
+    .catch((e) => {
+      document.querySelector('#submitArticleForm').style.display = null;
+      document.querySelector('#post-spinner').style.display = 'none';
+      document.querySelector('#post-fail').style.display = null;
+      console.error(e);
+    });
 });

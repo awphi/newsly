@@ -31,7 +31,10 @@ block content
 				.row
 					.col.d-flex.justify-content-center
 						button.btn.btn-primary#submitArticleBtn(type="button") Submit Article
-			
+			#post-spinner.spinner(style='display: none;')
+			h3#post-fail.text-center.text-danger(style='display: none;') Error encountered. Please try again.
+			h3#post-success.text-center.text-success(style='display: none;') Success! 
+				a(href='#' onclick='document.querySelector("a.navbar-brand").click();') View your story.
 		.col-md-2.bg-less-fade
 
 append scripts
