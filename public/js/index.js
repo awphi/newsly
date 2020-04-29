@@ -74,13 +74,13 @@ document.querySelector('.search-btn').addEventListener('click', function () {
 // Initially load stories on document open by emulating a change in sort mode
 document.querySelector('#sort a[sort-by=date-descending]').click();
 
-function clearCommentFields() {
+function clearCommentFields () {
   document.querySelector('#comment-content-input').value = '';
   document.querySelector('#comment-user-input').value = '';
 }
 
 // Function to open a specific story into the viewer using its ID
-function openStory(storyId) {
+function openStory (storyId) {
   if (storyOpen !== null) {
     return;
   }
@@ -121,7 +121,7 @@ function openStory(storyId) {
   document.querySelector('body').classList.add('modal-open');
 }
 
-function loadCommentToDOMViewer(comment) {
+function loadCommentToDOMViewer (comment) {
   const template = document.getElementById('comment-template');
   const card = document.importNode(template.content, true);
   card.querySelector('.date').textContent = new Date(comment.date).toUTCString();
@@ -131,7 +131,7 @@ function loadCommentToDOMViewer(comment) {
 }
 
 // Close the currently viewed story (if open)
-function closeStory() {
+function closeStory () {
   if (storyOpen === null) {
     return;
   }
@@ -143,7 +143,7 @@ function closeStory() {
 }
 
 // Uses the ApiClient to load and then subsequently load the stories to the DOM
-function loadStories(dirty = false) {
+function loadStories (dirty = false) {
   document.querySelector('#stories-spinner').style.display = null;
   document.querySelector('#load-more-btn').style.display = 'none';
   document.querySelector('#no-more-stories').style.display = 'none';
@@ -177,7 +177,7 @@ function loadStories(dirty = false) {
 }
 
 // Loads a story to the DOM using the story-box template and the cached JSON data from the server
-function loadStoryToDOM(json) {
+function loadStoryToDOM (json) {
   const id = json._id;
 
   if (json === undefined) {

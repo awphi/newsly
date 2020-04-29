@@ -17,8 +17,8 @@ const ApiClient = {
     });
   },
   submitArticle: function (article) {
-    console.log(`Submitting new article:`, article);
-    return fetch(`http://127.0.0.1:3000/submit-story`, {
+    console.log('Submitting new article:', article);
+    return fetch('http://127.0.0.1:3000/submit-story', {
       method: 'POST',
       body: article
     });

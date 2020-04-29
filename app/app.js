@@ -2,6 +2,7 @@
 const { v4 } = require('uuid');
 const uuidv4 = v4;
 const promiseFs = require('./promise-fs');
+const path = require('path');
 
 const express = require('express');
 const app = express();
@@ -22,6 +23,21 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 
+app.set('views', path.join(__dirname, '../views'));
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.set('view engine', 'pug');
+
+// Static page routes
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
+app.get('/submit', (req, res) => {
+  res.render('submit');
+});
+
+// API routes
 app.get('/stories-list', (req, res) => {
   const sort = 'sort' in req.query ? String(req.query.sort) : 'date-descending';
   const search = 'search' in req.query && req.query.search.length >= 3 ? String(req.query.search) : null;

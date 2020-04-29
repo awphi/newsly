@@ -1,6 +1,6 @@
 const http = require('http');
-const app = require('./app');
-const storyManager = require('./story-manager');
+const app = require('./app/app');
+const storyManager = require('./app/story-manager');
 const nodeCleanup = require('node-cleanup');
 
 const hostname = '0.0.0.0';
@@ -26,15 +26,14 @@ function onError(error) {
   var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-    default:
-      throw error;
+  if (error.code === 'EACCES') {
+    console.error(bind + ' requires elevated privileges');
+    process.exit(1);
+  } else if (error.code === 'EADDRINUSE') {
+    console.error(bind + ' is already in use');
+    process.exit(1);
+  } else {
+    throw error;
   }
 }
 
