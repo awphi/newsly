@@ -3,6 +3,7 @@ const { v4 } = require('uuid');
 const uuidv4 = v4;
 const promiseFs = require('./promise-fs');
 const path = require('path');
+const favicon = require('serve-favicon');
 
 const express = require('express');
 const app = express();
@@ -17,6 +18,8 @@ const upload = multer({
 const storyManager = require('./story-manager');
 const Comment = require('./comment');
 const Story = require('./story');
+
+app.use(favicon(path.join(__dirname, '../public', 'img', 'ico', 'favicon.ico')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
