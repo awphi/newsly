@@ -20,6 +20,9 @@ server.on('listening', onListening);
 process.on('SIGINT', onExit);
 process.on('SIGTERM', onExit);
 
+// Weird issue with nodemon &
+process.on('SIGUSR2', onExit);
+
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -46,8 +49,8 @@ function onListening() {
   console.log('Listening on ' + bind);
 }
 
-function onExit() {
+function onExit(e) {
   storyManager.saveAll().then(() => {
-    process.exit();
+    process.kill(process.pid, e);
   });
 }

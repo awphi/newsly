@@ -7,7 +7,7 @@
     "pretest": "eslint public/js/**/*.js app/**/*.js",
     "test": "jest",
     "dev:client": "pug --watch ./views --out ./public",
-    "dev:server": "nodemon --signal SIGTERM app/server.js",
+    "dev:server": "nodemon app/server.js",
     "build:client": "pug ./views --out ./public --pretty"
   },
   "author": "awphi",

@@ -70,8 +70,8 @@ append templates
 				p.date Date
 			p.text-body Content
 	template#post-card-template
-		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm.flex-column.mb-3
-			.post-card.d-flex.flex-column(story='')
+		.post-card-wrapper.d-flex.p-3.rounded.shadow-sm.flex-column.mb-3.w-100
+			.post-card.d-flex.flex-column.w-100(story='')
 				.d-flex.flex-column.w-100
 					h2.title
 					h3.subtitle
@@ -79,7 +79,7 @@ append templates
 						p.author
 						p.date
 				hr.w-100
-				.d-flex.flex-row
+				.d-flex.flex-row.w-100
 					img.post-card-img.shadow-sm.rounded.header-image
 					p.text-body
 			button.read-more-btn.btn.btn-secondary(style='opacity: 0;') Read more...
