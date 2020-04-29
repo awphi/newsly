@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 const storyManager = require('./story-manager');
+const nodeCleanup = require('node-cleanup');
 
 const hostname = '0.0.0.0';
 const port = 3000;
@@ -16,12 +17,6 @@ storyManager
 
 server.on('error', onError);
 server.on('listening', onListening);
-
-process.on('SIGINT', onExit);
-process.on('SIGTERM', onExit);
-
-// Weird issue with nodemon &
-process.on('SIGUSR2', onExit);
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -49,8 +44,12 @@ function onListening() {
   console.log('Listening on ' + bind);
 }
 
-function onExit(e) {
-  storyManager.saveAll().then(() => {
-    process.kill(process.pid, e);
-  });
-}
+nodeCleanup(function (exitCode, signal) {
+  if (signal) {
+    storyManager.saveAll().then(() => {
+      process.kill(process.pid, signal);
+    });
+    nodeCleanup.uninstall(); // don't call cleanup handler again
+    return false;
+  }
+});
