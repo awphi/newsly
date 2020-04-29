@@ -71,12 +71,12 @@ app.post('/stories/:storyId/comment', function (req, res) {
 
   // Author length: min 1, max 40 (chars)
   if (author.length <= 0 || author.length > 40) {
-    return res.status(400).send('Invalid author length!');
+    return res.sendStatus(400);
   }
 
   // Body length: min 1, max 240 (chars)
   if (body.length <= 0 || body.length > 240) {
-    return res.status(400).send('Invalid comment length!');
+    return res.sendStatus(400);
   }
 
   if (!(story in storyManager.stories)) {
@@ -96,8 +96,30 @@ app.post('/submit-story', upload.array('images', 10), function (req, res) {
     }
   }
 
+  var author = req.body.author ? String(req.body.author) : ''; // 40 chars max
+  var body = req.body.body ? String(req.body.body) : ''; // 20000 chars max
+  var title = req.body.title ? String(req.body.title) : ''; // 80 chars max
+  var subtitle = req.body.subtitle ? String(req.body.subtitle) : ''; // 80 chars max
+
+  if (author.length <= 0 || author.length > 40) {
+    return res.sendStatus(400);
+  }
+
+  if (body.length <= 0 || body.length > 20000) {
+    return res.sendStatus(400);
+  }
+
+  if (title.length <= 0 || title.length > 80) {
+    return res.sendStatus(400);
+  }
+
+  if (subtitle.length <= 0 || subtitle.length > 80) {
+    return res.sendStatus(400);
+  }
+
   const storyId = uuidv4();
   const story = new Story(storyId);
+
   story.author = req.body.author;
   story.body = req.body.body;
   story.title = req.body.title;

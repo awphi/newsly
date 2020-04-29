@@ -83,6 +83,10 @@ p {
   margin: 0;
 }
 
+.story-viewer-box .text-body {
+  white-space: pre-line;
+}
+
 #viewer-carousel {
   margin-bottom: 1rem;
 }

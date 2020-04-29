@@ -56,6 +56,8 @@ block content
 			hr
 			#stories
 			#stories-spinner.spinner(style='display: none;')
+			h3#try-again.text-center(style='display: none;') Error encountered. 
+				a(href='#' onclick='loadStories()') Try again.
 			h3#no-more-stories.text-center(style='display: none;') End of results.
 			button#load-more-btn.btn.btn-secondary(type='button') Load More...
 		.col-md-3.bg-less-fade

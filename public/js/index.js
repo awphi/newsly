@@ -147,6 +147,7 @@ function loadStories(dirty = false) {
   document.querySelector('#stories-spinner').style.display = null;
   document.querySelector('#load-more-btn').style.display = 'none';
   document.querySelector('#no-more-stories').style.display = 'none';
+  document.querySelector('#try-again').style.display = 'none';
 
   if (dirty) {
     storyCounter = 0;
@@ -168,7 +169,11 @@ function loadStories(dirty = false) {
         storyCounter += stories.length;
       }
     })
-    .catch((e) => console.error(e));
+    .catch((e) => {
+      document.querySelector('#stories-spinner').style.display = 'none';
+      document.querySelector('#try-again').style.display = null;
+      console.error(e);
+    });
 }
 
 // Loads a story to the DOM using the story-box template and the cached JSON data from the server

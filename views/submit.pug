@@ -10,19 +10,19 @@ block content
 				.row
 					.col
 						label(for="titleInput") Title
-						input#titleInput.form-control(name="title" type="text" placeholder="Title" required)
+						input#titleInput.form-control(name="title" type="text" placeholder="Title" maxlength="80" required)
 					.col
 						label(for="subtitleInput") Subtitle
-						input#subtitleInput.form-control(name="subtitle" type="text" placeholder="Subtitle" required)
+						input#subtitleInput.form-control(name="subtitle" type="text" placeholder="Subtitle" maxlength="80" required)
 				.row
 					.col
 						label(for="authorInput") Author
-						input#authorInput.form-control(name="author" type="text" placeholder="Author" required)
+						input#authorInput.form-control(name="author" type="text" placeholder="Author" maxlength="40" required)
 
 				.row
 					.col
 						label(for="bodyInput") Post Content
-						textarea#bodyInput.form-control(name="body" cols="30" rows="10" required)
+						textarea#bodyInput.form-control(name="body" cols="30" rows="10" maxlength="20000" required)
 				.row
 					.col
 						.custom-file
