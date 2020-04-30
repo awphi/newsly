@@ -4,7 +4,7 @@
   "description": "Server module for programming summative.",
   "scripts": {
     "start": "node server.js",
-    "pretest": "eslint public/js/**/*.js app/**/*.js server.js",
+    "pretest": "eslint .",
     "test": "jest",
     "dev": "nodemon server.js"
   },

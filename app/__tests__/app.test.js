@@ -2,9 +2,6 @@
 const app = require('../app');
 const request = require('supertest');
 const stories = require('../story-manager');
-
-// eslint-disable-next-line no-unused-vars
-const fs = require('fs');
 jest.mock('fs');
 
 beforeAll(stories.loadAll);
@@ -53,7 +50,7 @@ describe('POST endpoints', () => {
     request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: '' }).expect(400, done);
   });
 
-  it('invalid comment (body too long (>240 chars)) returns 400', (done) => {
+  it('invalid comment post (body too long (>240 chars)) returns 400', (done) => {
     request(app)
       .post('/stories/test_story_1/comment')
       .send({
@@ -64,7 +61,44 @@ describe('POST endpoints', () => {
       .expect(200, done);
   });
 
-  it('valid comment returns 200', (done) => {
+  it('valid comment post returns 200', (done) => {
     request(app).post('/stories/test_story_1/comment').send({ body: 'Body', author: 'Author' }).expect(200, done);
+  });
+
+  it('valid story post returns 200', (done) => {
+    request(app)
+      .post('/submit-story')
+      .attach('images', Buffer.from([0xdeadbeef]), 'image1.png')
+      .attach('images', Buffer.from([0xdeadbeef, 0xdeadbeef]), 'image2.jpeg')
+      .field('body', 'Body')
+      .field('title', 'TEST_USER_STORY Title')
+      .field('subtitle', 'Subtitle')
+      .field('author', 'Author')
+      .expect(200, done);
+  });
+
+  it('invalid story post returns 400 (no images, no body)', (done) => {
+    request(app).post('/submit-story').field('title', 'Title').field('subtitle', 'Subtitle').field('author', 'Author').expect(400, done);
+  });
+
+  it('invalid story post returns 400 (bad image format)', (done) => {
+    request(app)
+      .post('/submit-story')
+      .attach('images', Buffer.from([0xdeadbeef, 0xdeadbeef]), 'text.html')
+      .field('body', 'Body')
+      .field('title', 'Title')
+      .field('subtitle', 'Subtitle')
+      .field('author', 'Author')
+      .expect(400, done);
+  });
+});
+
+describe('GET endpoints (after POSTing)', () => {
+  it('searching for user-posted story returns the user-posted story 200', (done) => {
+    request(app)
+      .get('/stories-list?search=TEST_USER_STORY')
+      .expect('Content-type', 'application/json; charset=utf-8')
+      .expect((res) => expect(res.body.length).toEqual(1))
+      .expect(200, done);
   });
 });

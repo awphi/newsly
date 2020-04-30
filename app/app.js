@@ -19,15 +19,18 @@ const storyManager = require('./story-manager');
 const Comment = require('./comment');
 const Story = require('./story');
 
-app.use(favicon(path.join(__dirname, '../public', 'img', 'ico', 'favicon.ico')));
+const ImageRegExp = RegExp('^image/.*$');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
 
-app.set('views', path.join(__dirname, '../views'));
-app.use(express.static(path.join(__dirname, '../public')));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(favicon(path.join(__dirname, '../public', 'img', 'ico', 'favicon.ico')));
+  app.set('views', path.join(__dirname, '../views'));
+  app.use(express.static(path.join(__dirname, '../public')));
+}
 
 app.set('view engine', 'pug');
 
@@ -108,10 +111,10 @@ app.post('/stories/:storyId/comment', function (req, res) {
 });
 
 app.post('/submit-story', upload.array('images', 10), function (req, res) {
-  for (let i = 0; i < req.files; i++) {
+  for (let i = 0; i < req.files.length; i++) {
     const format = req.files[i].mimetype;
-    if (format.match('image/.*')[0].length !== format.length) {
-      return res.status(400).json({ error: 'Invalid image format!' });
+    if (!ImageRegExp.test(format)) {
+      return res.sendStatus(400);
     }
   }
 
