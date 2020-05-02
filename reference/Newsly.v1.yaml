@@ -122,7 +122,7 @@ paths:
         - stories
   /submit-story:
     post:
-      summary: ''
+      summary: Submit a story
       operationId: post-submit-story
       responses:
         '200':
@@ -138,6 +138,8 @@ paths:
               $ref: '#/components/schemas/story'
         description: 'Expects a story, encoded as **multipart/form-data** (easily done with the FormData object in the browser). It will ignore any non-required fields when creating the story on the server.'
       description: Post a new story to the website.
+      tags:
+        - stories
 components:
   schemas:
     story:
