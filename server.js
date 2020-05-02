@@ -44,7 +44,6 @@ function onListening() {
 }
 
 nodeCleanup(function (exitCode, signal) {
-  console.log(exitCode, signal);
   if (signal) {
     storyManager.saveAll().then(() => {
       process.kill(process.pid, signal);
