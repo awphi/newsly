@@ -8,7 +8,7 @@ const storyManager = {
     'date-ascending': (a, b) => storyManager.stories[a].date - storyManager.stories[b].date,
     'date-descending': (a, b) => storyManager.stories[b].date - storyManager.stories[a].date,
     'comments-ascending': (a, b) => storyManager.stories[a].comments.length - storyManager.stories[b].comments.length,
-    'comments-descending': (a, b) => storyManager.stories[b].length - storyManager.stories[a].length,
+    'comments-descending': (a, b) => storyManager.stories[b].comments.length - storyManager.stories[a].comments.length,
     'popularity-ascending': (a, b) => storyManager.stories[a].views - storyManager.stories[b].views,
     'popularity-descending': (a, b) => storyManager.stories[b].views - storyManager.stories[a].views
   }
