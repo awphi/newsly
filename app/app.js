@@ -3,7 +3,6 @@ const { v4 } = require('uuid');
 const uuidv4 = v4;
 const promiseFs = require('./promise-fs');
 const path = require('path');
-const favicon = require('serve-favicon');
 
 const express = require('express');
 const app = express();
@@ -25,23 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cors());
-
-if (process.env.NODE_ENV !== 'test') {
-  app.use(favicon(path.join(__dirname, '../public', 'img', 'ico', 'favicon.ico')));
-  app.set('views', path.join(__dirname, '../views'));
-  app.use(express.static(path.join(__dirname, '../public')));
-}
-
-app.set('view engine', 'pug');
-
-// Static page routes
-app.get('/', (req, res) => {
-  res.render('index');
-});
-
-app.get('/submit', (req, res) => {
-  res.render('submit');
-});
+app.use(express.static(path.join(__dirname, '../public'), { extensions: ['html'] }));
 
 // API routes
 app.get('/stories-list', (req, res) => {
