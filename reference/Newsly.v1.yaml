@@ -45,7 +45,7 @@ paths:
                 description: Bad Request
               examples:
                 example-1: {}
-      operationId: get-stories-list-sort
+      operationId: listStories
       description: Retrieve all the stories loaded on the server in a given order with or without a given search parameter.
       parameters:
         - schema:
@@ -93,7 +93,7 @@ paths:
               schema:
                 type: string
                 description: Bad Request
-      operationId: get-stories-storyId
+      operationId: getStory
       description: 'Retrieve the data on a given story from its ID. IDs are usually obtained with the [stories-list endpoint](get-stories-list-sort).'
   '/stories/{storyId}/comment':
     parameters:
@@ -104,7 +104,7 @@ paths:
         required: true
     post:
       summary: Post a comment on a given story
-      operationId: post-stories-storyId-comment
+      operationId: postComment
       description: Post a comment to a story of a given ID.
       requestBody:
         content:
@@ -119,11 +119,10 @@ paths:
           description: Bad Request
       tags:
         - comments
-        - stories
   /submit-story:
     post:
       summary: Submit a story
-      operationId: post-submit-story
+      operationId: postStory
       responses:
         '200':
           description: OK
