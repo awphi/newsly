@@ -18,6 +18,7 @@ h3 {
 }
 
 .search-field {
+  flex: 1;
   border-radius: 0.25rem;
   width: auto;
   padding-right: 3rem;

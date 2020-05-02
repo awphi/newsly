@@ -5,4 +5,4 @@ A simple non-secured database-less news/blog web app.
 ## Links
 
 API documentation: [here on stoplight](https://stoplight.io/p/docs/gh/awphi/newsly?group=master)  
-Showcase video: [here on youtube](link)
+Showcase video: [here on youtube](https://www.youtube.com/watch?v=Pfengs9U8YY)
